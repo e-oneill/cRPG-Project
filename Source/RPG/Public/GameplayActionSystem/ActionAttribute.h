@@ -1,0 +1,54 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Utility/ReplicatedObject.h"
+#include "GameplayTagContainer.h"
+#include "ActionAttribute.generated.h"
+
+class UGameplayActionComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttributeChangeSignature, UGameplayActionComponent*, OwningComponent, UActionAttribute*, Attribute);
+
+/**
+ * 
+ */
+UCLASS(BlueprintType, Blueprintable)
+class RPG_API UActionAttribute : public UReplicatedObject
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	FGameplayTag AttributeTag;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
+	float AttributeBaseValue;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing=OnRep_AttributeValue)
+	float AttributeValue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	UGameplayActionComponent* ActionComponent;
+
+	UFUNCTION()
+	void OnRep_AttributeValue();
+
+public:
+	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue = true);
+
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChangeSignature OnAttributeChanged;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	#pragma region GettersSetters
+	float GetAttributeValue() const { return AttributeValue; }
+	void SetAttributeValue(float val) { AttributeValue = FMath::Clamp(val, 0.f, AttributeBaseValue); OnAttributeChanged.Broadcast(ActionComponent, this); }
+	FGameplayTag GetAttributeTag() const { return AttributeTag; }
+	void SetAttributeTag(FGameplayTag val) { AttributeTag = val; }
+	float GetAttributeBaseValue() const { return AttributeBaseValue; }
+	void SetAttributeBaseValue(float val) { AttributeBaseValue = val; }
+	UGameplayActionComponent* GetActionComponent() const { return ActionComponent; }
+	void SetActionComponent(UGameplayActionComponent* val) { ActionComponent = val; }
+	#pragma endregion GettersSetters
+};
