@@ -50,10 +50,6 @@ void ARPGAIController::OnPossess(APawn* InPawn)
 		PawnSensingComponent->OnSeePawn.AddUniqueDynamic(this, &ARPGAIController::HandlePawnSpotted);
 		PawnSensingComponent->OnHearNoise.AddUniqueDynamic(this, &ARPGAIController::HandleNoiseHeard);
 	}
-
-	PlayerControlComponent = Cast<UPlayerControlComponent>(InPawn->GetComponentByClass(UPlayerControlComponent::StaticClass()));
-
-
 }
 
 void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)

@@ -76,12 +76,6 @@ public:
 	void AddOrUpdateSpottedCharacter(UGameplayActionComponent* SpottedActionComponent);
 
 protected:
-	UPlayerControlComponent* PlayerControlComponent;
-
-	UPROPERTY(BlueprintReadWrite)
-	float Alertness;
-
-	UPROPERTY(BlueprintReadOnly)
 	TArray<FSpottedCharacter> SpottedCharacters;
 
 	void OnPossess(APawn* InPawn) override;

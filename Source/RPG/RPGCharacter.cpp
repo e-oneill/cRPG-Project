@@ -73,7 +73,7 @@ ARPGCharacter::ARPGCharacter()
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("InventoryComponent");
 
 	SensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("SensingComponent"));
-
+	SensingComponent->SetPeripheralVisionAngle(70.f);
 
 	bReplicates = true;
 	bAlwaysRelevant = true;
