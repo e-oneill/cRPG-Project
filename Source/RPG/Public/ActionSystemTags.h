@@ -25,6 +25,10 @@ struct RPG_API FActionSystemTags : public FGameplayTagNativeAdder
 	FGameplayTag Action_Attack;
 #pragma endregion Actions
 
+#pragma region Factions
+	FGameplayTag Player_Faction;
+#pragma endregion Factions
+
 #pragma region Statuses
 	FGameplayTag Status;
 
@@ -51,6 +55,8 @@ protected:
 		Attr_Health = Manager.AddNativeGameplayTag(TEXT("Attribute.Health"));
 		Attr_Movement = Manager.AddNativeGameplayTag(TEXT("Attribute.Movement"));
 		Attr_ActionPoints = Manager.AddNativeGameplayTag(TEXT("Attribute.ActionPoints"));
+
+		Player_Faction = Manager.AddNativeGameplayTag(TEXT("Faction.Player"));
 	}
 
 private:

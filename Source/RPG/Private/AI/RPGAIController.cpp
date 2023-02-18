@@ -3,6 +3,8 @@
 
 #include "AI/RPGAIController.h"
 #include "Perception/PawnSensingComponent.h"
+#include "ActionSystemTags.h"
+#include "../RPG.h"
 
 void ARPGAIController::AIMoveToLocation(FVector Location)
 {
@@ -52,7 +54,7 @@ void ARPGAIController::OnPossess(APawn* InPawn)
 	}
 
 	PlayerControlComponent = Cast<UPlayerControlComponent>(InPawn->GetComponentByClass(UPlayerControlComponent::StaticClass()));
-
+	ActionComponent = Cast<UGameplayActionComponent>(InPawn->GetComponentByClass(UGameplayActionComponent::StaticClass()));
 
 }
 
@@ -62,6 +64,12 @@ void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)
 	if (PawnActionComponent)
 	{
 		AddOrUpdateSpottedCharacter(PawnActionComponent);
+		FGameplayTag PlayerFaction = FActionSystemTags::Get().Player_Faction;
+		if (ActionComponent->GetFaction() != PlayerFaction && PawnActionComponent->GetFaction() == PlayerFaction)
+		{
+			//this is a player faction character
+			UE_LOG(LogRPG, Log, TEXT("Spotted a player character!"));
+		}
 	}
 }
 

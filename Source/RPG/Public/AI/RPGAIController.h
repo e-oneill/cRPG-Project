@@ -78,6 +78,8 @@ public:
 protected:
 	UPlayerControlComponent* PlayerControlComponent;
 
+	UGameplayActionComponent* ActionComponent;
+
 	UPROPERTY(BlueprintReadWrite)
 	float Alertness;
 

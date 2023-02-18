@@ -57,6 +57,9 @@ protected:
 	TArray<UAction*> BoundActions;
 	//TMap<int32, UAction*> BoundActions;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Factions", meta = (Categories = "Faction."))
+	FGameplayTag Faction;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Replicated, Category = "Gameplay Action System")
 	FGameplayTagContainer ActiveGameplayTags;
 
@@ -208,4 +211,7 @@ public:
 	bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 	#pragma endregion Replication
 
+public:
+	FGameplayTag GetFaction() const { return Faction; }
+	void SetFaction(FGameplayTag val) { Faction = val; }
 };
