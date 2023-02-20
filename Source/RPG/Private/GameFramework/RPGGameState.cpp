@@ -71,3 +71,11 @@ FVector ARPGGameState::GetRandomPointInBox(FVector Min, FVector Max)
 	FBox Box = FBox(Min, Max);
 	return RandomStream.RandPointInBox(Box);
 }
+
+bool ARPGGameState::IsFactionHostile(FGameplayTag FactionA, FGameplayTag FactionB)
+{
+	//temporary implementation - check if factions are both or neither player
+	FGameplayTag PlayerFaction = FActionSystemTags::Get().Player_Faction;
+	//for now, just check that the two factions are not the same and one of them is the player faction
+	return (FactionA != FactionB && (FactionA == PlayerFaction || FactionB == PlayerFaction))
+}

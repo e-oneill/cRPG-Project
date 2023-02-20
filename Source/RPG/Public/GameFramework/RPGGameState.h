@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameplayTagContainer.h"
 #include "RPGGameState.generated.h"
 
 class UEncounterManager;
@@ -22,6 +23,7 @@ public:
 
 	void HandleBeginPlay() override;
 
+	#pragma region Characters
 	TArray<ARPGCharacter*> GetPlayerCharacters();
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
@@ -31,6 +33,8 @@ public:
 	void SetControlledActors(TArray<UPlayerControlComponent*> val) { ControlledActors = val; }
 	void AddToControlledActors(UPlayerControlComponent* In) { ControlledActors.Add(In); }
 	void RemoveFromControlledActors(UPlayerControlComponent* Out) { ControlledActors.Remove(Out); }
+
+	#pragma endregion Characters;
 
 	#pragma region RandomGeneration
 	UFUNCTION(BlueprintPure, Category = "Random Generation")
@@ -49,10 +53,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Random Generation")
 		static FVector GetRandomPointInBox(FVector Min, FVector Max);
 	#pragma endregion RandomGeneration
-
+	
+	bool IsFactionHostile(FGameplayTag FactionA, FGameplayTag FactionB);
 
 	UEncounterManager* GetEncounterManager() const { return EncounterManager; }
 	void SetEncounterManager(UEncounterManager* val) { EncounterManager = val; }
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<UPlayerControlComponent*> ControlledActors;
