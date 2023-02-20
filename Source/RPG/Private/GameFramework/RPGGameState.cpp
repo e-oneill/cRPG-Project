@@ -77,5 +77,5 @@ bool ARPGGameState::IsFactionHostile(FGameplayTag FactionA, FGameplayTag Faction
 	//temporary implementation - check if factions are both or neither player
 	FGameplayTag PlayerFaction = FActionSystemTags::Get().Player_Faction;
 	//for now, just check that the two factions are not the same and one of them is the player faction
-	return (FactionA != FactionB && (FactionA == PlayerFaction || FactionB == PlayerFaction))
+	return (FactionA != FactionB && (FactionA == PlayerFaction || FactionB == PlayerFaction));
 }
