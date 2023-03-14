@@ -52,12 +52,17 @@ public:
 	FVector GetLastSpottedLocation() const { return LastSpottedLocation; }
 	float GetLastSpottedTime() const { return LastSpottedTime; }
 
+	float GetTargetAwareness() const { return TargetAwareness; }
+	void SetTargetAwareness(float val) { TargetAwareness = val; }
 protected:
 	UPROPERTY(BlueprintReadWrite)
 	FVector LastSpottedLocation;
 
 	UPROPERTY(BlueprintReadWrite)
 	float LastSpottedTime;
+
+	UPROPERTY(BlueprintReadWrite)
+	float TargetAwareness;
 };
 
 /**
@@ -73,7 +78,7 @@ public:
 
 	bool HasSpottedCharacter(UGameplayActionComponent* SpottedActionComponent);
 
-	void AddOrUpdateSpottedCharacter(UGameplayActionComponent* SpottedActionComponent);
+	FSpottedCharacter& AddOrUpdateSpottedCharacter(UGameplayActionComponent* SpottedActionComponent);
 
 protected:
 	UPlayerControlComponent* PlayerControlComponent;
@@ -83,6 +88,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	float Alertness;
 
+	float AlertnessTickRate = .25f;
+
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FSpottedCharacter> SpottedCharacters;
 
@@ -91,6 +98,8 @@ protected:
 	void HandlePawnSpotted(APawn* SeenPawn);
 	UFUNCTION()
 	void HandleNoiseHeard(APawn* InInstigator, const FVector& Location, float Volume);
+
+	void StartEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
 
 
 

@@ -7,6 +7,7 @@
 #include "../RPGCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/RPGGameState.h"
+#include "GameplayActionSystem/GameplayActionComponent.h"
 
 extern TAutoConsoleVariable<bool> CVarDebugAll;
 bool EM_DebugAll = CVarDebugAll.GetValueOnGameThread();
@@ -62,7 +63,7 @@ AEncounter* UEncounterManager::StartEncounter(TArray<ARPGCharacter*> Characters)
 	}
 	//Create an encounter actor
 	FActorSpawnParameters SpawnParams;
-	AEncounter* NewEncounter = GetWorld()->SpawnActor<AEncounter>(AEncounter::StaticClass(), Characters[0]->GetActorLocation(), Characters[0]->GetActorRotation(), SpawnParams);
+	AEncounter* NewEncounter = GetWorld()->SpawnActor<AEncounter>(AEncounter::StaticClass(), Characters[0]->GetOwner()->GetActorLocation(), Characters[0]->GetOwner()->GetActorRotation(), SpawnParams);
 	if (!NewEncounter)
 	{
 		return nullptr;
@@ -73,6 +74,27 @@ AEncounter* UEncounterManager::StartEncounter(TArray<ARPGCharacter*> Characters)
 	NewEncounter->AddEncounterToUI();
 
 
+	return NewEncounter;
+}
+
+
+
+AEncounter* UEncounterManager::StartEncounter(TArray<UGameplayActionComponent*> InComponents)
+{
+	if (InComponents.Num() < 1)
+	{
+		return nullptr;
+	}
+	FActorSpawnParameters SpawnParams;
+	AEncounter* NewEncounter = GetWorld()->SpawnActor<AEncounter>(AEncounter::StaticClass(), InComponents[0]->GetOwner()->GetActorLocation(), InComponents[0]->GetOwner()->GetActorRotation(), SpawnParams);
+	if (!NewEncounter)
+	{
+		return nullptr;
+	}
+	NewEncounter->AddActionComponents(InComponents);
+	NewEncounter->Start();
+	Encounters.Add(NewEncounter);
+	NewEncounter->AddEncounterToUI();
 	return NewEncounter;
 }
 

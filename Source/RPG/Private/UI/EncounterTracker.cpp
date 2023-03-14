@@ -36,6 +36,7 @@ void UEncounterTracker::SetupEncounter(AEncounter* InEncounter)
 	//Bind to event called when the turn changes
 	InEncounter->OnCurrentTurnChanged.AddUniqueDynamic(this, &UEncounterTracker::OnCurrentTurnChanged);
 	InEncounter->OnEncounterEnd.AddUniqueDynamic(this, &UEncounterTracker::OnEncounterEnd);
+	InEncounter->OnCharacterJoinEncounter.AddUniqueDynamic(this, &UEncounterTracker::OnCharacterJoinEncounter);
 	//Call method to add the turns to the turn tracker
 	AddTurnsToTracker(InEncounter->GetTurns());
 	//Call the event, since it doesn't fire the first time
@@ -46,29 +47,34 @@ void UEncounterTracker::AddTurnsToTracker(TArray<UTurn*> InTurns)
 {
 	for (UTurn* Turn : InTurns)
 	{
-		//if this turn is already in the encounter, don't add it
-		if (Turns.Contains(Turn))
-		{
-			continue;
-		}
-		//add turn to Encounter Array
-		Turns.Add(Turn);
-
-		//create turn tracker widget
-		UTurnTracker* TurnTracker = CreateWidget<UTurnTracker>(GetOwningPlayer(), TurnTrackerClass, (TEXT("TurnTracker_%s"), *Turn->GetName()));
-		TurnTracker->Init(Turn);
-		if (TurnTracker)
-		{
-			UHorizontalBoxSlot* TurnSlot = TurnTrackerContainer->AddChildToHorizontalBox(TurnTracker);
-			FMargin SlotPadding;
-			SlotPadding.Left = 12.f;
-			SlotPadding.Right = 12.f;
-			TurnSlot->SetPadding(SlotPadding);
-		}
+		AddTurnToTracker(Turn);
 	}
 
 	if (GetVisibility() != ESlateVisibility::Visible)
 	{
 		SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void UEncounterTracker::AddTurnToTracker(UTurn* InTurn)
+{
+	//if this turn is already in the encounter, don't add it
+	if (Turns.Contains(InTurn))
+	{
+		return;
+	}
+	//add turn to Encounter Array
+	Turns.Add(InTurn);
+
+	//create turn tracker widget
+	UTurnTracker* TurnTracker = CreateWidget<UTurnTracker>(GetOwningPlayer(), TurnTrackerClass, (TEXT("TurnTracker_%s"), *InTurn->GetName()));
+	TurnTracker->Init(InTurn);
+	if (TurnTracker)
+	{
+		UHorizontalBoxSlot* TurnSlot = TurnTrackerContainer->AddChildToHorizontalBox(TurnTracker);
+		FMargin SlotPadding;
+		SlotPadding.Left = 12.f;
+		SlotPadding.Right = 12.f;
+		TurnSlot->SetPadding(SlotPadding);
 	}
 }

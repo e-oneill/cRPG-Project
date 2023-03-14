@@ -99,6 +99,7 @@ public:
 	void BindActionToNextFreeSlot(UAction* ActionToBind);
 	void BindAction(UAction* ActionToBind, int32 SlotToBindTo);
 
+
 	UPROPERTY(BlueprintAssignable)
 	FActionBindChangeEvent OnActionBound;
 
@@ -201,7 +202,6 @@ public:
 	#pragma endregion GettersSetters
 
 	
-
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

@@ -8,6 +8,7 @@
 
 class AEncounter;
 class ARPGCharacter;
+class UGameplayActionComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RPG_API UEncounterManager : public UActorComponent
@@ -34,6 +35,10 @@ public:
 	AEncounter* StartEncounterWithPlayerCharacters();
 	UFUNCTION(BlueprintCallable)
 	AEncounter* StartEncounter(TArray<ARPGCharacter*> Characters);
+
+	//UFUNCTION(BlueprintCallable)
+	AEncounter* StartEncounter(TArray<UGameplayActionComponent*> InComponents);
+
 	UFUNCTION(BlueprintCallable)
 	void EndEncounter(AEncounter* InEncounter);
 

@@ -49,6 +49,8 @@ public:
 	UPawnSensingComponent* GetSensingComponent() const { return SensingComponent; }
 	void SetSensingComponent(UPawnSensingComponent* val) { SensingComponent = val; }
 
+	UGameplayActionComponent* GetActionComponent() const { return ActionComponent; }
+	void SetActionComponent(UGameplayActionComponent* val) { ActionComponent = val; }
 	//UAnimInstance* GetOwnerAnimInstance() override;
 
 protected:

@@ -40,8 +40,14 @@ protected:
 	UFUNCTION()
 	void OnEncounterEnd(AEncounter* InEncounter);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCharacterJoinEncounter(ARPGCharacter* JoiningCharacter, AEncounter* InEncounter);
+
 public:
 	void SetupEncounter(AEncounter* InEncounter);
 
 	void AddTurnsToTracker(TArray<UTurn*> InTurns);
+
+	UFUNCTION(BlueprintCallable)
+	void AddTurnToTracker(UTurn* InTurn);
 };

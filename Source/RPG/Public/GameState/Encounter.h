@@ -46,8 +46,12 @@ public:
 
 	void AddCharacters(TArray<ARPGCharacter*> Characters);
 	bool IsCharacterInEncounter(ARPGCharacter* Character);
+	bool IsCharacterInEncounter(UGameplayActionComponent* ActionComponent);
+
+	void AddActionComponents(TArray<UGameplayActionComponent*> ActionComponents);
 
 	void AddCharacterToEncounter(ARPGCharacter* InCharacter);
+	void AddCharacterToEncounter(UGameplayActionComponent* InActionComponent);
 	void RemoveCharacterFromEncounter(ARPGCharacter* InCharacter);
 
 #pragma region Network_EventDispatchers
@@ -59,6 +63,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FTurnEventSignature OnCurrentTurnChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FCharacterEncounterEventSignature OnCharacterJoinEncounter;
 
 	UPROPERTY(BlueprintAssignable)
 	FEncounterEventSignature OnEncounterStart;

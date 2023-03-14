@@ -78,12 +78,33 @@ void AEncounter::AddCharacters(TArray<ARPGCharacter*> InCharacters)
 	}
 }
 
+void AEncounter::AddActionComponents(TArray<UGameplayActionComponent*> ActionComponents)
+{
+	for (UGameplayActionComponent* ActionComponent : ActionComponents)
+	{
+		AddCharacterToEncounter(ActionComponent);
+	}
+}
+
 bool AEncounter::IsCharacterInEncounter(ARPGCharacter* Character)
 {
-	for (UTurn* Turn : Turns)
+	return IsCharacterInEncounter(Character->GetActionComponent());
+	/*for (UTurn* Turn : Turns)
 	{
 		ARPGCharacter* TurnChar = Cast<ARPGCharacter>(Turn->GetActionComponent()->GetOwner());
 		if (TurnChar && TurnChar == Character)
+		{
+			return true;
+		}
+	}
+	return false;*/
+}
+
+bool AEncounter::IsCharacterInEncounter(UGameplayActionComponent* ActionComponent)
+{
+	for (UTurn* Turn : Turns)
+	{
+		if (Turn->GetActionComponent() == ActionComponent)
 		{
 			return true;
 		}
@@ -93,20 +114,22 @@ bool AEncounter::IsCharacterInEncounter(ARPGCharacter* Character)
 
 void AEncounter::AddCharacterToEncounter(ARPGCharacter* InCharacter)
 {
-	//If the character is already in the encounter, continue
-		//later add a check for if the character is already in an encounter, when developing how encounters can be joined
-	if (IsCharacterInEncounter(InCharacter))
+	AddCharacterToEncounter(InCharacter->GetActionComponent());
+}
+
+void AEncounter::AddCharacterToEncounter(UGameplayActionComponent* InActionComponent)
+{
+	if (IsCharacterInEncounter(InActionComponent))
 	{
 		if (Enc_DebugAll || Enc_DebugGameState)
-			UE_LOG(LogRPG, Log, TEXT("Tried to add %s to encounter, but they were already in the encounter"), *InCharacter->GetName());
+			UE_LOG(LogRPG, Log, TEXT("Tried to add %s to encounter, but they were already in the encounter"), *InActionComponent->GetOwner()->GetName());
 
 		return;
 	}
 	UTurn* Turn = NewObject<UTurn>(this, UTurn::StaticClass());
-	UGameplayActionComponent* ActionComponent = Cast<UGameplayActionComponent>(InCharacter->GetComponentByClass(UGameplayActionComponent::StaticClass()));
-	Turn->InitializeTurn(ActionComponent, this);
-	NetMulticast_OnCharacterJoinEncounter(InCharacter);
+	Turn->InitializeTurn(InActionComponent, this);
 	Turns.Add(Turn);
+	NetMulticast_OnCharacterJoinEncounter(Cast<ARPGCharacter>(InActionComponent->GetOwner()));
 }
 
 void AEncounter::RemoveCharacterFromEncounter(ARPGCharacter* InCharacter)
@@ -135,6 +158,7 @@ void AEncounter::RemoveCharacterFromEncounter(ARPGCharacter* InCharacter)
 void AEncounter::NetMulticast_OnCharacterJoinEncounter_Implementation(ARPGCharacter* InCharacter)
 {
 	InCharacter->OnEncounterJoined.Broadcast(InCharacter, this);
+	OnCharacterJoinEncounter.Broadcast(InCharacter, this);
 }
 
 void AEncounter::NetMulticast_OnCharacterLeftEncounter_Implementation(ARPGCharacter* InCharacter)
