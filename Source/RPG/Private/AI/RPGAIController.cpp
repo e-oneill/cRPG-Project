@@ -8,6 +8,12 @@
 #include "GameFramework/RPGGameState.h"
 #include "GameState/EncounterManager.h"
 #include "GameState/Encounter.h"
+#include "AI/GOAPPlanningComponent.h"
+
+ARPGAIController::ARPGAIController()
+{
+	GOAPPlanner = CreateDefaultSubobject<UGOAPPlanningComponent>(TEXT("GOAPPlanner"));
+}
 
 void ARPGAIController::AIMoveToLocation(FVector Location)
 {
@@ -44,6 +50,18 @@ FSpottedCharacter& ARPGAIController::AddOrUpdateSpottedCharacter(UGameplayAction
 	SpottedCharacters.Add(NewSpottedCharacter);
 
 	return SpottedCharacters[SpottedCharacters.Num() - 1];
+}
+
+TArray<UAction*> ARPGAIController::GetActions()
+{
+	TArray<UAction*> Actions;
+
+	if (!ActionComponent)
+	{
+		return Actions;
+	}
+
+	return ActionComponent->GetCharacterActions();
 }
 
 void ARPGAIController::OnPossess(APawn* InPawn)

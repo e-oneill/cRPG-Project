@@ -8,6 +8,7 @@
 #include "RPGAIController.generated.h"
 
 class UGameplayActionComponent;
+class UGOAPPlanningComponent;
 
 USTRUCT(Blueprintable, BlueprintType)
 struct FSpottedCharacter
@@ -74,16 +75,30 @@ class RPG_API ARPGAIController : public AAIController
 	GENERATED_BODY()
 
 public:
+	ARPGAIController();
+
 	void AIMoveToLocation(FVector Location);
 
 	bool HasSpottedCharacter(UGameplayActionComponent* SpottedActionComponent);
 
 	FSpottedCharacter& AddOrUpdateSpottedCharacter(UGameplayActionComponent* SpottedActionComponent);
 
-protected:
-	UPlayerControlComponent* PlayerControlComponent;
+	UGOAPPlanningComponent* GetGOAPPlanner() const { return GOAPPlanner; }
+	void SetGOAPPlanner(UGOAPPlanningComponent* val) { GOAPPlanner = val; }
+	TArray<FSpottedCharacter> GetSpottedCharacters() const { return SpottedCharacters; }
+	void SetSpottedCharacters(TArray<FSpottedCharacter> val) { SpottedCharacters = val; }
+	TArray<UAction*> GetActions();
 
+	UPlayerControlComponent* GetPlayerControlComponent() const { return PlayerControlComponent; }
+	void SetPlayerControlComponent(UPlayerControlComponent* val) { PlayerControlComponent = val; }
+protected:
+
+	UPlayerControlComponent* PlayerControlComponent;
+	
 	UGameplayActionComponent* ActionComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UGOAPPlanningComponent* GOAPPlanner;
 
 	UPROPERTY(BlueprintReadWrite)
 	float Alertness;

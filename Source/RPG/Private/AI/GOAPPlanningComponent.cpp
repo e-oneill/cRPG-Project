@@ -2,6 +2,9 @@
 
 
 #include "AI/GOAPPlanningComponent.h"
+#include "AI/WorldModel.h"
+#include "AI/RPGAIController.h"
+#include "GameFramework/RPGGameState.h"
 
 // Sets default values for this component's properties
 UGOAPPlanningComponent::UGOAPPlanningComponent()
@@ -28,7 +31,48 @@ void UGOAPPlanningComponent::BeginPlay()
 void UGOAPPlanningComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (GetRPGAIController() && GetRPGAIController()->GetPlayerControlComponent() && !GetRPGAIController()->GetPlayerControlComponent()->IsPlayerControlled())
+	{
+		CreateActionPlan();
+	}
 
+	//CreateActionPlan();
 	// ...
+}
+
+void UGOAPPlanningComponent::CreateActionPlan()
+{
+	FWorldModel InitialWorldModel;
+	TArray<UAction*> Actions = GetRPGAIController()->GetActions();
+	InitialWorldModel.CreateWorldModel(GetAIController());
+
+	ARPGGameState* GameState = GetOwner()->GetWorld()->GetGameState<ARPGGameState>();
+
+	WorldModels.Add(InitialWorldModel);
+
+	FWorldModel FirstCheck = InitialWorldModel;
+
+	for (FWorldModelActor& KnownActor : FirstCheck.KnownActors)
+	{
+		for (UAction* Action : Actions)
+		{
+			FirstCheck.Self.UseActionOnTargetActor(KnownActor, Action);
+		}
+	}
+
+	WorldModels.Add(FirstCheck);
+	
+	
+
+}
+
+AAIController* UGOAPPlanningComponent::GetAIController()
+{
+	return Cast<AAIController>(GetOwner());
+}
+
+ARPGAIController* UGOAPPlanningComponent::GetRPGAIController()
+{
+	return Cast<ARPGAIController>(GetOwner());
 }
 

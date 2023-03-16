@@ -4,7 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameplayTagContainer.h"
+#include "AI/WorldModel.h"
 #include "GOAPPlanningComponent.generated.h"
+
+
+class AAIController;
+class ARPGAIController;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -20,9 +26,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<FWorldModel> WorldModels;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	void CreateActionPlan();
+
+	AAIController* GetAIController();
+
+	ARPGAIController* GetRPGAIController();
 };
