@@ -418,7 +418,7 @@ void ARPGPlayerController::OnSecondaryReleased()
 }
 
 
-void ARPGPlayerController::OpenInventory()
+void ARPGPlayerController::OpenInventory_Implementation()
 {
 	//find the first selected character who is both player controlled and has an inventory component and open that inventory
 	for (int i = 0; i < Selected.Num(); i++)

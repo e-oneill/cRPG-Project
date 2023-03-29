@@ -25,12 +25,13 @@ UUIManagementComponent::UUIManagementComponent()
 void UUIManagementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	APlayerController* PC = Cast<APlayerController>(GetOwner());
-	if (!PC || !PC->IsLocalController())
+	
+	if (!IsLocallyControlled())
 	{
 		return;
 	}
-
+	
+	APlayerController* PC = Cast<APlayerController>(GetOwner());
 	HUD = CreateWidget<UMainHUD>(PC, HUDClass, TEXT("Main HUD"));
 	if (HUD)
 	{
@@ -38,10 +39,8 @@ void UUIManagementComponent::BeginPlay()
 		FocusWidget = HUD;
 	}
 
-	if (PC->IsLocalPlayerController())
-	{
-		InGameMenu = CreateWidget<UInGameMenu>(PC, InGameMenuClass, TEXT("InGameMenu"));
-	}
+	InGameMenu = CreateWidget<UInGameMenu>(PC, InGameMenuClass, TEXT("InGameMenu"));
+	
 	//create the ingame menu, we can make it visible later
 	
 	
@@ -49,6 +48,12 @@ void UUIManagementComponent::BeginPlay()
 	
 }
 
+
+bool UUIManagementComponent::IsLocallyControlled()
+{
+	APlayerController* PC = Cast<APlayerController>(GetOwner());
+	return (PC && PC->IsLocalController());
+}
 
 // Called every frame
 void UUIManagementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -65,7 +70,7 @@ void UUIManagementComponent::AddEncounterUI(AEncounter* Encounter)
 
 void UUIManagementComponent::OpenGameMenuUI()
 {
-	if (!InGameMenu)
+	if (!InGameMenu || !IsLocallyControlled())
 	{
 		return;
 	}

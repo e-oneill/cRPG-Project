@@ -31,13 +31,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInGameMenu> InGameMenuClass;
 
+	UPROPERTY()
 	UMainHUD* HUD;
+	UPROPERTY()
 	UInGameMenu* InGameMenu;
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* FocusWidget;
 
 	AActor* SelectedActor;
+
+	bool IsLocallyControlled();
 
 public:	
 	// Called every frame
@@ -52,8 +56,7 @@ public:
 	void OpenInventory(UInventoryComponent* InventoryToOpen = nullptr);
 
 	void ChangeSelectedActor(AActor* Actor);
-		
-public:
+
 	AActor* GetSelectedActor() const { return SelectedActor; }
 	void SetSelectedActor(AActor* val) { SelectedActor = val; }
 };
