@@ -9,12 +9,21 @@
 #include "Action.generated.h"
 
 
-
 class UGameplayActionComponent;
 class UActionConsideration;
 class UTexture2D;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FActionStateEventSignature, UAction*, Action, EActionState, State, EActionState, OldState);
+
+UENUM()
+enum class EActionValidTargets
+{
+	ALL,
+	ONLYHOSTILE,
+	FRIENDLYNOTSELF,
+	FRIENDLYINCSELF,
+	ONLYSELF
+};
 
 /**
  * This is the base class for a action
@@ -51,7 +60,7 @@ public:
 
 	//will call canexecute first, and if it returns true, will execute. Should not override in normal circumstances
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void TryExecuteAction(FVector TargetLocation = FVector::ZeroVector, AActor* TargetActor = nullptr);
+	bool TryExecuteAction(FVector TargetLocation = FVector::ZeroVector, AActor* TargetActor = nullptr);
 	//Can be directly called to execute the action. Can be overriden, but you should call the parent when you do.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ExecuteAction(FVector TargetLocation = FVector::ZeroVector, AActor* TargetActor = nullptr);
@@ -68,7 +77,7 @@ public:
 	void SetSource(UGameplayActionComponent* val) { Source = val; }
 	EActionState GetState() const { return State; }
 	void SetState(EActionState val) { State = val; }
-	float GetActionRange() const { return ActionRange; }
+	virtual float GetActionRange() const { return ActionRange; }
 	void SetActionRange(float val) { ActionRange = val; }
 	#pragma endregion Getters_Setters
 	
@@ -102,6 +111,9 @@ public:
 
 	TArray<FEffectConfigurationData> GetActionEffects() const { return ActionEffects; }
 	void SetActionEffects(TArray<FEffectConfigurationData> val) { ActionEffects = val; }
+	EActionValidTargets GetValidTargets() const { return ValidTargets; }
+	void SetValidTargets(EActionValidTargets val) { ValidTargets = val; }
+
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Action|UI")
 	FName ActionName;
@@ -113,6 +125,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = -1.f))
 	float ActionRange;
 
+	UPROPERTY(EditAnywhere, Category="Action")
+	EActionValidTargets ValidTargets;
 
 	#pragma region GameplayTags
 	//which tags will block this from executing

@@ -38,8 +38,12 @@ void UUIManagementComponent::BeginPlay()
 		FocusWidget = HUD;
 	}
 
+	if (PC->IsLocalPlayerController())
+	{
+		InGameMenu = CreateWidget<UInGameMenu>(PC, InGameMenuClass, TEXT("InGameMenu"));
+	}
 	//create the ingame menu, we can make it visible later
-	InGameMenu = CreateWidget<UInGameMenu>(PC, InGameMenuClass, TEXT("InGameMenu"));
+	
 	
 	// ...
 	

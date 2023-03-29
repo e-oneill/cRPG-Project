@@ -9,6 +9,7 @@
 #include "GameState/Encounter.h"
 #include "Net/UnrealNetwork.h"
 #include "Math/RandomStream.h"
+#include "ActionSystemTags.h"
 
 FRandomStream ARPGGameState::RandomStream;
 
@@ -72,7 +73,7 @@ FVector ARPGGameState::GetRandomPointInBox(FVector Min, FVector Max)
 	return RandomStream.RandPointInBox(Box);
 }
 
-bool ARPGGameState::IsFactionHostile(FGameplayTag FactionA, FGameplayTag FactionB)
+bool ARPGGameState::IsFactionHostile(FGameplayTag FactionA, FGameplayTag FactionB) const
 {
 	//temporary implementation - check if factions are both or neither player
 	FGameplayTag PlayerFaction = FActionSystemTags::Get().Player_Faction;

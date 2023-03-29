@@ -36,6 +36,9 @@ public:
 	UFUNCTION()
 	virtual void OnMoveComplete(FMoveTaskResultData MoveTaskResult);
 
+
+	float GetActionRange() const override;
+
 protected:
 	TWeakObjectPtr<UGameplayActionTask> Task;
 

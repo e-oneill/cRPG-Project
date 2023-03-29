@@ -5,10 +5,14 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "GameplayActionSystem/GameplayActionSystemStatics.h"
+#include "PlanEntry.h"
 #include "RPGAIController.generated.h"
 
 class UGameplayActionComponent;
 class UGOAPPlanningComponent;
+class UAction;
+class UTurn;
 
 USTRUCT(Blueprintable, BlueprintType)
 struct FSpottedCharacter
@@ -91,14 +95,21 @@ public:
 
 	UPlayerControlComponent* GetPlayerControlComponent() const { return PlayerControlComponent; }
 	void SetPlayerControlComponent(UPlayerControlComponent* val) { PlayerControlComponent = val; }
-protected:
 
+	void GetPlanAndExecute();
+
+
+protected:
 	UPlayerControlComponent* PlayerControlComponent;
 	
 	UGameplayActionComponent* ActionComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	UGOAPPlanningComponent* GOAPPlanner;
+
+	UTurn* Turn;
+
+	TArray<FPlanEntry> ActionPlan;
 
 	UPROPERTY(BlueprintReadWrite)
 	float Alertness;
@@ -115,6 +126,20 @@ protected:
 	void HandleNoiseHeard(APawn* InInstigator, const FVector& Location, float Volume);
 
 	void StartEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
+
+	void ExecuteNextAction(TArray<FPlanEntry>& Plan);
+
+	bool ExecutePlanEntry(FPlanEntry& PlanEntry);
+
+	void HandleFinishPlan();
+
+	UFUNCTION()
+	void OnTurnAssigned(UTurn* NewTurn);
+	UFUNCTION()
+	void OnTurnStart(UTurn* NewTurn);
+	UFUNCTION()
+	void OnActionComplete(UAction* CompletedAction, EActionState State, EActionState OldState);
+
 
 
 

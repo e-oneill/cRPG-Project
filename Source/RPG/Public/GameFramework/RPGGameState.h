@@ -54,7 +54,8 @@ public:
 		static FVector GetRandomPointInBox(FVector Min, FVector Max);
 	#pragma endregion RandomGeneration
 	
-	bool IsFactionHostile(FGameplayTag FactionA, FGameplayTag FactionB);
+	UFUNCTION(BlueprintCallable)
+	bool IsFactionHostile(FGameplayTag FactionA, FGameplayTag FactionB) const;
 
 	UEncounterManager* GetEncounterManager() const { return EncounterManager; }
 	void SetEncounterManager(UEncounterManager* val) { EncounterManager = val; }

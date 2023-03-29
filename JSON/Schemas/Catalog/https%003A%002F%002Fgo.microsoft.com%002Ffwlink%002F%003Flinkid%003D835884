@@ -1144,6 +1144,30 @@
       "url": "https://json.schemastore.org/crowdin.json"
     },
     {
+      "name": "Crowdsec collection Schema",
+      "description": "A YAML schema for Crowdsec collection configuration files",
+      "fileMatch": ["**/collections/*/*.yaml"],
+      "url": "https://raw.githubusercontent.com/crowdsecurity/crowdsec-yaml-schemas/main/collection_schema.yaml"
+    },
+    {
+      "name": "Crowdsec parser Schema",
+      "description": "A YAML schema for Crowdsec parser configuration files",
+      "fileMatch": [
+        "**/parsers/s00-raw/*/*.yaml",
+        "**/parsers/s01-parse/*/*.yaml",
+        "**/parsers/s02-enrich/*/*.yaml",
+        "**/postoverflows/s00-enrich/*/*.yaml",
+        "**/postoverflows/s01-whitelist/*/*.yaml"
+      ],
+      "url": "https://raw.githubusercontent.com/crowdsecurity/crowdsec-yaml-schemas/main/parser_schema.yaml"
+    },
+    {
+      "name": "Crowdsec scenario Schema",
+      "description": "A YAML schema for Crowdsec scenario configuration files",
+      "fileMatch": ["**/scenarioss/*/*.yaml"],
+      "url": "https://raw.githubusercontent.com/crowdsecurity/crowdsec-yaml-schemas/main/scenario_schema.yaml"
+    },
+    {
       "name": "cypress.json",
       "description": "Cypress.io test runner configuration file",
       "fileMatch": ["cypress.json"],
@@ -1626,6 +1650,15 @@
       "url": "https://json.schemastore.org/github-action.json"
     },
     {
+      "name": "GitHub Discussion",
+      "description": "YAML schema for GitHub Discussions",
+      "fileMatch": [
+        "**/.github/DISCUSSION_TEMPLATE/*.yml",
+        "**/.github/DISCUSSION_TEMPLATE/*.yaml"
+      ],
+      "url": "https://json.schemastore.org/github-discussion.json"
+    },
+    {
       "name": "GitHub Funding",
       "description": "YAML schema for GitHub Funding",
       "fileMatch": [
@@ -1852,6 +1885,18 @@
       "url": "https://raw.githubusercontent.com/ory/hydra/master/.schema/version.schema.json"
     },
     {
+      "name": "IBM Zapp document",
+      "description": "IBM Z APPlication configuration file for IBM zDevOps development tools such as Z Open Editor.",
+      "fileMatch": ["zapp.yaml", "zapp.json"],
+      "url": "https://raw.githubusercontent.com/IBM/zopeneditor-about/main/zapp/zapp-schema-1.0.0.json"
+    },
+    {
+      "name": "IBM zCodeFormatSettings",
+      "description": "IBM Enterprise languages code formatter settings file for IBM zDevOps development tools such as Z Open Editor.",
+      "fileMatch": ["zcodeformat.yaml", "zcodeformat.json"],
+      "url": "https://raw.githubusercontent.com/IBM/zopeneditor-about/main/zcodeformat/zcodeformat-schema-0.0.1.json"
+    },
+    {
       "name": "ide.host.json",
       "description": "JSON schema for IDE template host file",
       "fileMatch": ["ide.host.json"],
@@ -1876,10 +1921,25 @@
       "url": "https://json.schemastore.org/imgbotconfig.json"
     },
     {
+      "name": "IMG Catapult PSP",
+      "description": "Imagination Techologies Catapult platform support pack contents",
+      "fileMatch": ["contents.yaml"],
+      "url": "https://json.schemastore.org/img-catapult-psp-1.0.0.json",
+      "versions": {
+        "1.0.0": "https://json.schemastore.org/img-catapult-psp-1.0.0.json"
+      }
+    },
+    {
       "name": "importmap.json",
       "description": "JSON schema for Import Maps files",
       "fileMatch": ["importmap.json", "import_map.json", "import-map.json"],
       "url": "https://json.schemastore.org/importmap.json"
+    },
+    {
+      "name": "ioBroker Configuration",
+      "description": "The configuration file of an ioBroker installation",
+      "fileMatch": ["iobroker.json", "iobroker-dist.json"],
+      "url": "https://raw.githubusercontent.com/ioBroker/ioBroker.js-controller/master/schemas/iobroker.json"
     },
     {
       "name": "ioBroker JSON UI",
@@ -2295,6 +2355,12 @@
       "description": "Configuration file defining what sounds play when sound event is triggered for a resourcepack for Minecraft.",
       "fileMatch": ["**/assets/*/sounds.json"],
       "url": "https://raw.githubusercontent.com/AxoCode/json-schema/master/minecraft/sounds.json"
+    },
+    {
+      "name": "Minecraft Resource Pack Texture Mcmeta",
+      "description": "Configuration file defining an mcmeta file for a texture for a resource pack for Minecraft.",
+      "fileMatch": ["**/assets/*/textures/**/*.png.mcmeta"],
+      "url": "https://json.schemastore.org/minecraft-texture-mcmeta.json"
     },
     {
       "name": "MkDocs Configuration 1.0",
@@ -2834,6 +2900,11 @@
       "url": "https://raw.githubusercontent.com/Cog-Creators/Red-DiscordBot/V3/develop/schema/red_cog_repo.schema.json"
     },
     {
+      "name": "Red-DiscordBot Trivia",
+      "description": "Red-DiscordBot Trivia List file",
+      "url": "https://raw.githubusercontent.com/Cog-Creators/Red-DiscordBot/V3/develop/schema/trivia.schema.json"
+    },
+    {
       "name": ".rehyperc",
       "description": "A rehype configuration file",
       "fileMatch": [
@@ -2866,6 +2937,12 @@
       "description": "Windows App localization file",
       "fileMatch": ["*.resjson"],
       "url": "https://json.schemastore.org/resjson.json"
+    },
+    {
+      "name": "rtx",
+      "description": "JSON schema for rtx config, a polyglot dev tool manager",
+      "fileMatch": [".rtx.toml", "**/rtx/config.toml"],
+      "url": "https://rtx.pub/schema/rtx.json"
     },
     {
       "name": "Ruff",
@@ -2917,7 +2994,8 @@
       "fileMatch": [".rr*.yml", ".rr*.yaml"],
       "versions": {
         "1.0": "https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/1.0.schema.json",
-        "2.0": "https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json"
+        "2.0": "https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json",
+        "3.0": "https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/3.0.schema.json"
       }
     },
     {
@@ -3239,6 +3317,12 @@
       "description": "Swagger API 2.0 schema",
       "fileMatch": ["swagger.json"],
       "url": "https://json.schemastore.org/swagger-2.0.json"
+    },
+    {
+      "name": "task.json",
+      "description": "VSCode Task file",
+      "fileMatch": ["task.json"],
+      "url": "https://json.schemastore.org/task.json"
     },
     {
       "name": "Talisman configuration",

@@ -82,12 +82,20 @@ bool UAction::CanExecuteAction_Implementation(FVector TargetLocation /*= FVector
 	return CheckConsiderations(TargetLocation, TargetActor, EActionState::Executing);
 }
 
-void UAction::TryExecuteAction_Implementation(FVector TargetLocation /*= FVector::ZeroVector*/, AActor* TargetActor /*= nullptr*/)
+bool UAction::TryExecuteAction_Implementation(FVector TargetLocation /*= FVector::ZeroVector*/, AActor* TargetActor /*= nullptr*/)
 {
-	if (CanExecuteAction(TargetLocation, TargetActor))
+	bool bCanExecuteAction = CanExecuteAction(TargetLocation, TargetActor);
+	if (!bCanExecuteAction)
+	{
+		return false;
+	}
+	else
 	{
 		ExecuteAction(TargetLocation, TargetActor);
+		return true;
 	}
+		
+	
 }
 
 void UAction::ExecuteAction_Implementation(FVector TargetLocation /*= FVector::ZeroVector*/, AActor* TargetActor /*= nullptr*/)
@@ -133,15 +141,16 @@ void UAction::CompleteAction_Implementation(FVector TargetLocation /*= FVector::
 	
 	EActionState OldState = State;
 	State = EActionState::Complete;
+	for (FGameplayTag GrantTag : GrantsTags)
+	{
+		Source->RemoveGameplayTag(GrantTag);
+	}
 	if (Source->GetOwner()->HasAuthority())
 	{
 		OnRep_State(OldState);
 	}
 
-	for (FGameplayTag GrantTag : GrantsTags)
-	{
-		Source->RemoveGameplayTag(GrantTag);
-	}
+	
 
 }
 
