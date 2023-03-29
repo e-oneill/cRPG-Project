@@ -121,7 +121,7 @@ protected:
 	void OnSecondaryPressed();
 	void OnSecondaryReleased();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Client, Unreliable)
 	void OpenInventory();
 
 	UFUNCTION(BlueprintCallable)
