@@ -214,4 +214,7 @@ public:
 public:
 	FGameplayTag GetFaction() const { return Faction; }
 	void SetFaction(FGameplayTag val) { Faction = val; }
+	TArray<UActionAttribute*> GetAttributes() const { return Attributes; }
+	TArray<UAction*> GetCharacterActions() const { return CharacterActions; }
+	void SetCharacterActions(TArray<UAction*> val) { CharacterActions = val; }
 };

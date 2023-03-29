@@ -8,6 +8,13 @@
 #include "GameFramework/RPGGameState.h"
 #include "GameState/EncounterManager.h"
 #include "GameState/Encounter.h"
+#include "AI/GOAPPlanningComponent.h"
+#include "AI/WorldModel.h"
+
+ARPGAIController::ARPGAIController()
+{
+	GOAPPlanner = CreateDefaultSubobject<UGOAPPlanningComponent>(TEXT("GOAPPlanner"));
+}
 
 void ARPGAIController::AIMoveToLocation(FVector Location)
 {
@@ -46,6 +53,136 @@ FSpottedCharacter& ARPGAIController::AddOrUpdateSpottedCharacter(UGameplayAction
 	return SpottedCharacters[SpottedCharacters.Num() - 1];
 }
 
+TArray<UAction*> ARPGAIController::GetActions()
+{
+	TArray<UAction*> Actions;
+
+	if (!ActionComponent)
+	{
+		return Actions;
+	}
+
+	return ActionComponent->GetCharacterActions();
+}
+
+void ARPGAIController::GetPlanAndExecute()
+{
+	ActionPlan = GOAPPlanner->FindPlan();
+
+	ActionPlan.RemoveAt(0);
+}
+
+void ARPGAIController::ExecuteNextAction(TArray<FPlanEntry>& Plan)
+{
+	if (Plan.Num() == 0)
+	{
+		//Plan is empty
+		HandleFinishPlan();
+		return;
+	}
+
+	//if the next entry in plan is NULL, that means the DO_NOTHING action has been queued.
+	while (Plan[0].Action == NULL)
+	{
+		Plan.RemoveAt(0);
+		//if after removing the DO_NOTHING action the plan is empty, return
+		if (Plan.Num() == 0)
+		{
+			HandleFinishPlan();
+			return;
+		}
+	}
+
+
+
+	bool bCanTakeAction = ExecutePlanEntry(Plan[0]);
+
+	Plan.RemoveAt(0);
+}
+
+bool ARPGAIController::ExecutePlanEntry(FPlanEntry& PlanEntry)
+{
+	FVector TargetLocation = FVector::ZeroVector;
+	AActor* TargetActor = nullptr;
+	
+	if (PlanEntry.TargetActor == nullptr)
+	{
+		TargetLocation = PlanEntry.TargetLocation;
+	}
+	else
+	{
+		TargetActor = PlanEntry.TargetActor->GetOwner();
+	}
+
+	
+
+	bool bTakeAction = PlanEntry.Action->TryExecuteAction(TargetLocation, TargetActor);
+	if (bTakeAction)
+	{
+		PlanEntry.Action->OnActionComplete.AddUniqueDynamic(this, &ARPGAIController::OnActionComplete);
+	}
+	else
+	{
+		OnActionComplete(PlanEntry.Action, EActionState::Complete, EActionState::Idle);
+	}
+
+
+	return bTakeAction;
+}
+
+void ARPGAIController::HandleFinishPlan()
+{
+	UE_LOG(LogTemp, Log, TEXT("Finished Action Plan"));
+	ActionPlan = GOAPPlanner->FindPlan();
+	if (ActionPlan.IsEmpty())
+	{
+		if (Turn)
+		{
+			AEncounter* Encounter = Turn->GetEncounter().Get();
+			Encounter->EndCurrentTurn();
+		}
+	}
+	else
+	{
+		ExecuteNextAction(ActionPlan);
+	}
+}
+
+void ARPGAIController::OnTurnAssigned(UTurn* NewTurn)
+{
+	Turn = NewTurn;
+	Turn->OnTurnStart.AddUniqueDynamic(this, &ARPGAIController::OnTurnStart);
+}
+
+void ARPGAIController::OnTurnStart(UTurn* NewTurn)
+{
+	if (PlayerControlComponent->IsPlayerControlled())
+	{
+		return;
+	}
+
+	ActionPlan = GOAPPlanner->FindPlan();
+
+	ExecuteNextAction(ActionPlan);
+}
+
+void ARPGAIController::OnActionComplete(UAction* CompletedAction, EActionState State, EActionState OldState)
+{
+	if (State != EActionState::Complete)
+	{
+		return;
+	}
+
+	if (ActionPlan.Num() > 0)
+	{
+		ExecuteNextAction(ActionPlan);
+	}
+	else
+	{
+		HandleFinishPlan();
+	}
+}
+
 void ARPGAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -60,6 +197,11 @@ void ARPGAIController::OnPossess(APawn* InPawn)
 
 	PlayerControlComponent = Cast<UPlayerControlComponent>(InPawn->GetComponentByClass(UPlayerControlComponent::StaticClass()));
 	ActionComponent = Cast<UGameplayActionComponent>(InPawn->GetComponentByClass(UGameplayActionComponent::StaticClass()));
+
+	if (ActionComponent)
+	{
+		ActionComponent->OnTurnAssigned.AddUniqueDynamic(this, &ARPGAIController::OnTurnAssigned);
+	}
 
 }
 
@@ -129,3 +271,5 @@ void ARPGAIController::StartEncounterWithSpottedCharacter(UGameplayActionCompone
 	EncounterManager->StartEncounter(EncounterCharacters);
 
 }
+
+

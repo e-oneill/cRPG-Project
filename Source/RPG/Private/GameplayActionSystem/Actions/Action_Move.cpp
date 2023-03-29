@@ -9,6 +9,7 @@
 #include "GameplayActionSystem/GameplayActionTask.h"
 #include "GameplayActionSystem/Tasks/GameplayTask_WaitForMove.h"
 #include "AI/RPGAIController.h"
+#include "Math/NumericLimits.h"
 
 void UAction_Move::Tick_Implementation()
 {
@@ -28,6 +29,16 @@ void UAction_Move::Tick_Implementation()
 void UAction_Move::OnMoveComplete(FMoveTaskResultData MoveTaskResult)
 {
 	CompleteAction();
+}
+
+float UAction_Move::GetActionRange() const
+{
+	if (Source->GetTurn())
+	{
+		//if we are in turn mode, return turn remaining movement
+		return Source->GetTurn()->GetRemainingMovement();
+	}
+	return TNumericLimits<float>::Max();
 }
 
 void UAction_Move::SetupActionData()
