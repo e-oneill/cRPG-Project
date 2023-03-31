@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Animation/AnimMontage.h"
+#include "Sound/SoundCue.h"
 //#include "ActionEffect.h"
 #include "GameplayActionSystemStatics.generated.h"
 /**
@@ -201,6 +202,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Animation", EditConditionHides))
 	UAnimMontage* AnimationMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	USoundCue* SoundCue;
 
  };
 

@@ -5,6 +5,7 @@
 #include "GameplayActionSystem/GameplayActionSystemStatics.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
 #include "GameplayActionSystem/ActionCue_Animation.h"
+#include "GameplayActionSystem/CueTypes/ActionCue_Audio.h"
 
 UActionCueBase* UActionCueBase::CreateActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource /*= nullptr*/, UGameplayActionComponent* InTarget /*= nullptr*/, FVector InTargetLocation /*= nullptr*/, TSubclassOf<UActionCueBase> ActionClass /*= UActionCueBase::StaticClass()*/)
 {
@@ -12,6 +13,10 @@ UActionCueBase* UActionCueBase::CreateActionCue(FCueConfigurationData ConfigData
 	if (ConfigData.Type == ECueType::Animation && !ActionClass->IsChildOf(UActionCue_Animation::StaticClass()))
 	{
 		ActionClass = UActionCue_Animation::StaticClass();
+	}
+	else if (ConfigData.Type == ECueType::Audio && !ActionClass->IsChildOf(UActionCue_Audio::StaticClass()))
+	{
+		ActionClass = UActionCue_Audio::StaticClass();
 	}
 
 	//create a new object and call the initialize method on it.
@@ -47,7 +52,15 @@ void UActionCueBase::InitializeActionCue(FCueConfigurationData ConfigData, UGame
 		Target = nullptr;
 	}
 
-	TargetLocation = InTargetLocation;
+	if (Target)
+	{
+		TargetLocation = Target->GetOwner()->GetActorLocation();
+	}
+	else
+	{
+		TargetLocation = InTargetLocation;
+	}
+	
 
 	Type = ConfigData.Type;
 	CueTarget = ConfigData.Target;
