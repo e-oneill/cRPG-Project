@@ -8,20 +8,21 @@
 #include "ActionCueBase.generated.h"
 
 class UGameplayActionComponent;
+class UAction;
 
 /**
  *	THIS IS THE BASE CLASS FOR THE ACTION CUE, ONE OF THE MORE SPECIFIC CUE CLASSES SHOULD BE USED DEPENDING ON THE KIND OF ARTIFACT YOU WANT TO SPAWN
  */
-UCLASS(Abstract)
+UCLASS(Abstract, Blueprintable)
 class RPG_API UActionCueBase : public UReplicatedObject
 {
 	GENERATED_BODY()
 
 public:
-	static UActionCueBase* CreateActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource = nullptr, UGameplayActionComponent* InTarget = nullptr, FVector InTargetLocation = FVector::ZeroVector, TSubclassOf<UActionCueBase> ActionClass = UActionCueBase::StaticClass());
-	static void CreateAndPlayCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource = nullptr, UGameplayActionComponent* InTarget = nullptr, FVector InTargetLocation = FVector::ZeroVector, TSubclassOf<UActionCueBase> ActionClass = UActionCueBase::StaticClass());
+	static UActionCueBase* CreateActionCue(FCueConfigurationData ConfigData, UAction* ParentAction, UGameplayActionComponent* InSource = nullptr, UGameplayActionComponent* InTarget = nullptr, FVector InTargetLocation = FVector::ZeroVector, TSubclassOf<UActionCueBase> ActionClass = UActionCueBase::StaticClass());
+	static void CreateAndPlayCue(FCueConfigurationData ConfigData, UAction* ParentAction, UGameplayActionComponent* InSource = nullptr, UGameplayActionComponent* InTarget = nullptr, FVector InTargetLocation = FVector::ZeroVector, TSubclassOf<UActionCueBase> ActionClass = UActionCueBase::StaticClass());
 
-	virtual void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation);
+	virtual void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation, UAction* ParentAction);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void PlayCue();
@@ -45,6 +46,8 @@ public:
 
 	
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Action Cue|Setup")
+	UAction* Action;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Action Cue|Setup")
 	UGameplayActionComponent* Source;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Action Cue|Setup")

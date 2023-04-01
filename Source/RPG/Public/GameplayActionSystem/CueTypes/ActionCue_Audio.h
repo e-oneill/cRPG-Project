@@ -15,14 +15,18 @@ class RPG_API UActionCue_Audio : public UActionCueBase
 	GENERATED_BODY()
 	
 public:
-	void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation) override;
+	void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation, UAction* ParentAction) override;
 
 	void PlayCue_Implementation() override;
 
 	float GetCueLength() override;
 
 protected:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	USoundCue* SoundCue;
+	UPROPERTY(BlueprintReadOnly)
+	UAudioComponent* PlayingSound;
+	UPROPERTY(BlueprintReadOnly)
+	bool bLooping;
 
 };

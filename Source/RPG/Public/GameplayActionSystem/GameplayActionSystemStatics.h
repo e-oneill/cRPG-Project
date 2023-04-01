@@ -206,6 +206,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
 	USoundCue* SoundCue;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	bool bLoop = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio && bLoop", EditConditionHides))
+	ECueExecuteTime EndLoop;
+
  };
 
  UENUM()
