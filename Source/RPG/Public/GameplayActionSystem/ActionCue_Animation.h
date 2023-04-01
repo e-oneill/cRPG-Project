@@ -20,7 +20,7 @@ protected:
 	UAnimMontage* AnimationMontage;
 
 public:
-	void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation) override;
+	void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation, UAction* ParentAction) override;
 
 	void PlayCue_Implementation() override;
 

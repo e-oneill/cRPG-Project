@@ -268,7 +268,7 @@ void UAction::PlayActionCues(ECueExecuteTime ExecuteTime, UGameplayActionCompone
 void UAction::NetMulticast_PlayCue_Implementation(const FCueConfigurationData& CueConfig, UGameplayActionComponent* TargetComponent, const FVector& TargetLocation)
 {
 	UE_LOG(LogRPG, Log, TEXT("Calling NetMulticast"));
-	UActionCueBase::CreateAndPlayCue(CueConfig, Source, TargetComponent, TargetLocation);
+	UActionCueBase::CreateAndPlayCue(CueConfig, this, Source, TargetComponent, TargetLocation);
 }
 
 FTimerDelegate UAction::GetDelegateForNextState(FVector TargetLocation, AActor* TargetActor, ECueExecuteTime ExecuteTime)

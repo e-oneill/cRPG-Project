@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Animation/AnimMontage.h"
+#include "Sound/SoundCue.h"
 //#include "ActionEffect.h"
 #include "GameplayActionSystemStatics.generated.h"
 /**
@@ -201,6 +202,18 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Animation", EditConditionHides))
 	UAnimMontage* AnimationMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	USoundCue* SoundCue;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	bool bLoop = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio && bLoop", EditConditionHides))
+	ECueExecuteTime EndOn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (DisplayName = "2D Sound", EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	bool b2DSound = false;
 
  };
 

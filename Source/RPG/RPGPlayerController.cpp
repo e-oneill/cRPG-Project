@@ -103,7 +103,7 @@ void ARPGPlayerController::Server_CancelAction_Implementation(UAction* Action)
 
 void ARPGPlayerController::Client_PlayActionCue_Implementation(UAction* Action, const FCueConfigurationData& ConfigData, UGameplayActionComponent* TargetComponent, const FVector& TargetLocation)
 {
-	UActionCueBase::CreateAndPlayCue(ConfigData, Action->GetSource(),TargetComponent, TargetLocation);
+	UActionCueBase::CreateAndPlayCue(ConfigData, Action, Action->GetSource(),TargetComponent, TargetLocation);
 }
 
 void ARPGPlayerController::PlayerTick(float DeltaTime)

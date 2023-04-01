@@ -5,9 +5,9 @@
 #include "GameplayActionSystem/GameplayActionComponent.h"
 #include "GameplayActionSystem/ActionOwnerInterface.h"
 
-void UActionCue_Animation::InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation)
+void UActionCue_Animation::InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation, UAction* ParentAction)
 {
-	Super::InitializeActionCue(ConfigData, InSource, InTarget, InTargetLocation);
+	Super::InitializeActionCue(ConfigData, InSource, InTarget, InTargetLocation, ParentAction);
 
 	AnimationMontage = ConfigData.AnimationMontage;
 }
