@@ -210,7 +210,10 @@ public:
 	bool bLoop = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio && bLoop", EditConditionHides))
-	ECueExecuteTime EndLoop;
+	ECueExecuteTime EndOn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (DisplayName = "2D Sound", EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	bool b2DSound = false;
 
  };
 

@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameplayActionSystem/ActionCueBase.h"
+#include "../GameplayActionSystemStatics.h"
 #include "ActionCue_Audio.generated.h"
 
+class UAction;
 /**
  * 
  */
@@ -21,12 +23,17 @@ public:
 
 	float GetCueLength() override;
 
+	UFUNCTION()
+	void StopCuePlayback(UAction* InAction, EActionState State, EActionState OldState);
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	USoundCue* SoundCue;
 	UPROPERTY(BlueprintReadOnly)
 	UAudioComponent* PlayingSound;
 	UPROPERTY(BlueprintReadOnly)
-	bool bLooping;
-
+	bool bLooping = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool b2DSound = false;
+	ECueExecuteTime EndOn;
 };
