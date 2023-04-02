@@ -98,6 +98,11 @@ AEncounter* UEncounterManager::StartEncounter(TArray<UGameplayActionComponent*> 
 	return NewEncounter;
 }
 
+AEncounter* UEncounterManager::CombineEncounters(AEncounter* EncounterA, AEncounter* EncounterB)
+{
+	return nullptr;
+}
+
 void UEncounterManager::EndEncounter(AEncounter* InEncounter)
 {
 	InEncounter->End();

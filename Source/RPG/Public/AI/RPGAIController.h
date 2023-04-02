@@ -127,6 +127,8 @@ protected:
 
 	void StartEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
 
+	void JoinEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
+
 	void ExecuteNextAction(TArray<FPlanEntry>& Plan);
 
 	bool ExecutePlanEntry(FPlanEntry& PlanEntry);

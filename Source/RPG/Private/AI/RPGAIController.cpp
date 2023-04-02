@@ -10,6 +10,7 @@
 #include "GameState/Encounter.h"
 #include "AI/GOAPPlanningComponent.h"
 #include "AI/WorldModel.h"
+#include "RPGGameStatics.h"
 
 ARPGAIController::ARPGAIController()
 {
@@ -223,7 +224,21 @@ void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)
 			UE_LOG(LogRPG, Log, TEXT("Spotted a hostile player character, awareness of this target is now %f!"), SpottedCharacter.GetTargetAwareness());
 			if (SpottedCharacter.GetTargetAwareness() >= 1.f)
 			{
-				if (!ActionComponent->GetTurn())
+				//declaring bools for handling the possible cases here
+				bool bSpottedCharInEncounter = SpottedCharacter.SpottedActionComponent->GetTurn() != nullptr;
+				bool bAIAgentInEncounter = ActionComponent->GetTurn() != nullptr;
+
+				//if the spotted ca
+				if (bSpottedCharInEncounter && !bAIAgentInEncounter)
+				{
+					AEncounter* SpottedCharacterEncounter = SpottedCharacter.SpottedActionComponent->GetTurn()->GetEncounter().Get();
+					SpottedCharacterEncounter->AddCharacterToEncounter(ActionComponent);
+				}
+				else if (bSpottedCharInEncounter && bAIAgentInEncounter)
+				{
+					JoinEncountersWithSpottedCharacter(SpottedCharacter.SpottedActionComponent);
+				}
+				else if (!bSpottedCharInEncounter && bAIAgentInEncounter)
 				{
 					//we are alerted, start a combat encounter
 					StartEncounterWithSpottedCharacter(PawnActionComponent);
@@ -252,13 +267,7 @@ void ARPGAIController::HandleNoiseHeard(APawn* InInstigator, const FVector& Loca
 
 void ARPGAIController::StartEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter)
 {
-	ARPGGameState* GameState = SpottedCharacter->GetWorld()->GetGameState<ARPGGameState>();
-	if (!GameState)
-	{
-		return;
-	}
-	
-	UEncounterManager* EncounterManager = GameState->GetEncounterManager();
+	UEncounterManager* EncounterManager = URPGGameStatics::GetEncounterManager(SpottedCharacter->GetWorld());
 	if (!EncounterManager)
 	{
 		return;
@@ -272,4 +281,15 @@ void ARPGAIController::StartEncounterWithSpottedCharacter(UGameplayActionCompone
 
 }
 
+void ARPGAIController::JoinEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter)
+{
+	UEncounterManager* EncounterManager = URPGGameStatics::GetEncounterManager(SpottedCharacter->GetWorld());
+	if (!EncounterManager)
+	{
+		return;
+	}
+	AEncounter* SpottedCharacterEncounter = SpottedCharacter->GetTurn()->GetEncounter().Get();
+	AEncounter* MyEncounter = ActionComponent->GetTurn()->GetEncounter().Get();
+	EncounterManager->CombineEncounters(MyEncounter, SpottedCharacterEncounter);
+}
 
