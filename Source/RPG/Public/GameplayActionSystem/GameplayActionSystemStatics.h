@@ -187,8 +187,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	ECueType Type;
 
+	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (ToolTip = "This is the Actor that the Cue will run on. Selecting Location for an Animation type Cue will make it do nothing"))
 	ECueTarget Target;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Particle && Target == ECueTarget::Location", EditConditionHides))
+		bool bFollowMouseCursor = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (ToolTip = "For networking purposes. Show the Cue only to the Controlling Client for the Character or Play it on all connected clients"))
 	ECueRelevancy Relevancy;

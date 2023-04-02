@@ -11,6 +11,8 @@
 #include "Engine/ActorChannel.h"
 #include "GameplayActionSystem/ActionOwnerInterface.h"
 #include "GameplayActionSystem/ActionPlayerControlInterface.h"
+#include "Interfaces/PlayerInteraction/PlayerControlComponent.h"
+#include "../RPGPlayerController.h"
 
 // Sets default values for this component's properties
 /*UGameplayActionComponent::UGameplayActionComponent()
@@ -217,10 +219,26 @@ TScriptInterface<IActionPlayerControlInterface> UGameplayActionComponent::GetPla
 
 }
 
+APlayerController* UGameplayActionComponent::GetPlayerController()
+{
+	UPlayerControlComponent* PCControlComp = Cast<UPlayerControlComponent>(GetOwner()->GetComponentByClass(UPlayerControlComponent::StaticClass()));
+
+	if (PCControlComp)
+	{
+		return Cast<APlayerController>(PCControlComp->GetPlayerController());
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 // Called every frame
 void UGameplayActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	OnTick.Broadcast(DeltaTime);
 
 	// ...
 }

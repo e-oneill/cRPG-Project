@@ -111,6 +111,11 @@ void UActionCueBase::PlayCue_Implementation()
 	}
 }
 
+void UActionCueBase::TickCue(float DeltaTime)
+{
+
+}
+
 float UActionCueBase::GetCueLength()
 {
 	return 0.f;

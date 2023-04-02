@@ -29,9 +29,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	FName AttachSocket;
 
-	UFXSystemComponent* SpawnEmitterCascade(UParticleSystem* CascadeSystem);
+	bool bFollowMouse;
 
-	UFXSystemComponent* SpawnEmitterNiagara(UNiagaraSystem* NiagaraSystem);
+	UFXSystemComponent* SpawnEmitterCascade(UWorld* WorldContext, UParticleSystem* CascadeSystem);
+
+	UFXSystemComponent* SpawnEmitterNiagara(UWorld* WorldContext, UNiagaraSystem* NiagaraSystem);
+
+	USceneComponent* GetComponentToAttachTo();
+
+	FVector GetLocationOfPlayerCursor();
 
 public:
 	void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation, UAction* ParentAction) override;
@@ -44,5 +50,8 @@ public:
 
 
 	void StopCuePlayback(UAction* InAction, EActionState State, EActionState OldState) override;
+
+
+	void TickCue(float DeltaTime) override;
 
 };

@@ -30,6 +30,10 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void PlayCue();
 
+	//to make this cue tick, subscribe to tick events on the source action component using Source->OnTick.AddUniqueDynamic()
+	UFUNCTION()
+	virtual void TickCue(float DeltaTime);
+
 	virtual float GetCueLength();
 
 	#pragma region GettersSetters
