@@ -24,8 +24,15 @@ public:
 
 	virtual void InitializeActionCue(FCueConfigurationData ConfigData, UGameplayActionComponent* InSource, UGameplayActionComponent* InTarget, FVector InTargetLocation, UAction* ParentAction);
 
+	UFUNCTION()
+	virtual void StopCuePlayback(UAction* InAction, EActionState State, EActionState OldState);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void PlayCue();
+
+	//to make this cue tick, subscribe to tick events on the source action component using Source->OnTick.AddUniqueDynamic()
+	UFUNCTION()
+	virtual void TickCue(float DeltaTime);
 
 	virtual float GetCueLength();
 
@@ -62,5 +69,9 @@ protected:
 	ECueExecuteTime ExecuteTime;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Action Cue|Setup")
 	ECueActionStatusContext ExecutesOnActionStatus;
+	UPROPERTY(BlueprintReadOnly)
+		bool bLooping = false;
+	UPROPERTY(BlueprintReadOnly)
+	ECueExecuteTime EndOn;
 
 };

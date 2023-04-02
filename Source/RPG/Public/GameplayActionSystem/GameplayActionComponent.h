@@ -11,7 +11,6 @@
 #include "GameState/Turn.h"
 #include "GameplayActionComponent.generated.h"
 
-
 class UAction;
 class UTurn;
 class UAction_Move;
@@ -23,6 +22,7 @@ class IActionPlayerControlInterface;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayTagEventSignature, UGameplayActionComponent*, ChangedComponent, FGameplayTag, ChangedTag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMultiTagEventSignature, UGameplayActionComponent*, ChangedComponent, FGameplayTagContainer, ChangedTags);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FActionBindChangeEvent, UAction*, ChangedAction, int32, Slot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActionComponentTickEvent, float, DeltaTime);
 
 //this struct is used in the details panel to set up an attribute for the component. On begin play this will be used to create an instance of an attribute
 USTRUCT(BlueprintType)
@@ -197,6 +197,9 @@ public:
 	UFUNCTION(BlueprintPure)
 		TScriptInterface<IActionPlayerControlInterface> GetPlayerControlInterface();
 
+
+		APlayerController* GetPlayerController();
+
 	UFUNCTION(BlueprintPure)
 		TScriptInterface<IGameplayTaskOwnerInterface> GetTaskOwner() { return TScriptInterface<IGameplayTaskOwnerInterface>(this); }
 	#pragma endregion GettersSetters
@@ -204,6 +207,9 @@ public:
 	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	//use this tick event to subscribe children of this component to tick events from the component
+	UPROPERTY(BlueprintAssignable)
+	FActionComponentTickEvent OnTick;
 
 	#pragma region Replication
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

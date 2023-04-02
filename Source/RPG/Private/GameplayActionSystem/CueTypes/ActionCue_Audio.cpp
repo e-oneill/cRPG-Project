@@ -13,8 +13,6 @@ void UActionCue_Audio::InitializeActionCue(FCueConfigurationData ConfigData, UGa
 	Super::InitializeActionCue(ConfigData, InSource, InTarget, InTargetLocation, ParentAction);
 
 	SoundCue = ConfigData.SoundCue;
-	bLooping = ConfigData.bLoop;
-	EndOn = ConfigData.EndOn;
 	b2DSound = ConfigData.b2DSound;
 }
 
@@ -56,30 +54,6 @@ void UActionCue_Audio::PlayCue_Implementation()
 		PlayingSound = UGameplayStatics::SpawnSoundAtLocation(Source, SoundCue, TargetLocation);
 	}
 
-	if (bLooping)
-	{
-		
-		switch (EndOn)
-		{
-		case ECueExecuteTime::OnStartPrepare:
-		case ECueExecuteTime::OnPrepare:
-			Action->OnActionPrepare.AddUniqueDynamic(this, &UActionCue_Audio::StopCuePlayback);
-			break;
-		case ECueExecuteTime::OnEndPrepare:
-		case ECueExecuteTime::OnStartExecute:
-		case ECueExecuteTime::OnExecute:
-			Action->OnActionExecute.AddUniqueDynamic(this, &UActionCue_Audio::StopCuePlayback);
-			break;
-		case ECueExecuteTime::OnEndExecute:
-			Action->OnActionComplete.AddUniqueDynamic(this, &UActionCue_Audio::StopCuePlayback);
-			
-			break;
-		default:
-			break;
-
-		}
-
-		Action->OnActionCancel.AddUniqueDynamic(this, &UActionCue_Audio::StopCuePlayback);
-	}
+	Super::PlayCue_Implementation();
 
 }

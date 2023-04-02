@@ -7,6 +7,7 @@
 #include "GameplayActionSystem/ActionCue_Animation.h"
 #include "GameplayActionSystem/CueTypes/ActionCue_Audio.h"
 #include "GameplayActionSystem/Action.h"
+#include "GameplayActionSystem/CueTypes/ActionCue_Particle.h"
 
 UActionCueBase* UActionCueBase::CreateActionCue(FCueConfigurationData ConfigData, UAction* ParentAction, UGameplayActionComponent* InSource /*= nullptr*/, UGameplayActionComponent* InTarget /*= nullptr*/, FVector InTargetLocation /*= nullptr*/, TSubclassOf<UActionCueBase> ActionClass /*= UActionCueBase::StaticClass()*/)
 {
@@ -19,7 +20,10 @@ UActionCueBase* UActionCueBase::CreateActionCue(FCueConfigurationData ConfigData
 	{
 		ActionClass = UActionCue_Audio::StaticClass();
 	}
-
+	else if (ConfigData.Type == ECueType::Particle && !ActionClass->IsChildOf(UActionCue_Particle::StaticClass()))
+	{
+		ActionClass = UActionCue_Particle::StaticClass();
+	}
 	
 	//create a new object and call the initialize method on it.
 	//this is a virtual function, it'll be called by subclasses
@@ -69,12 +73,47 @@ void UActionCueBase::InitializeActionCue(FCueConfigurationData ConfigData, UGame
 	Type = ConfigData.Type;
 	CueTarget = ConfigData.Target;
 	ExecuteTime = ConfigData.ExecuteTime;
-	
+	bLooping = ConfigData.bLoop;
+	EndOn = ConfigData.EndOn;
+}
+
+void UActionCueBase::StopCuePlayback(UAction* InAction, EActionState State, EActionState OldState)
+{
+
 }
 
 void UActionCueBase::PlayCue_Implementation()
 {
-	//the base implementation of this does nothing
+	if (bLooping)
+	{
+
+		switch (EndOn)
+		{
+		case ECueExecuteTime::OnStartPrepare:
+		case ECueExecuteTime::OnPrepare:
+			Action->OnActionPrepare.AddUniqueDynamic(this, &UActionCueBase::StopCuePlayback);
+			break;
+		case ECueExecuteTime::OnEndPrepare:
+		case ECueExecuteTime::OnStartExecute:
+		case ECueExecuteTime::OnExecute:
+			Action->OnActionExecute.AddUniqueDynamic(this, &UActionCueBase::StopCuePlayback);
+			break;
+		case ECueExecuteTime::OnEndExecute:
+			Action->OnActionComplete.AddUniqueDynamic(this, &UActionCueBase::StopCuePlayback);
+
+			break;
+		default:
+			break;
+
+		}
+
+		Action->OnActionCancel.AddUniqueDynamic(this, &UActionCueBase::StopCuePlayback);
+	}
+}
+
+void UActionCueBase::TickCue(float DeltaTime)
+{
+
 }
 
 float UActionCueBase::GetCueLength()
