@@ -20,7 +20,7 @@ enum class EConsiderationApplication : uint8
 /**
  * 
  */
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, BlueprintType)
 class RPG_API UActionConsideration : public UReplicatedObject
 {
 	GENERATED_BODY()

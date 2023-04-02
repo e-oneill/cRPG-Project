@@ -298,8 +298,9 @@ FTimerDelegate UAction::GetDelegateForNextState(FVector TargetLocation, AActor* 
 
 bool UAction::CheckConsiderations(FVector TargetLocation, AActor* TargetActor, EActionState StateToCheck)
 {
-	for (UActionConsideration* Consideration : Considerations)
+	for (int i = 0; i < Considerations.Num(); i++)
 	{
+		UActionConsideration* Consideration = Considerations[i];
 		//check if this consideration should not be applied
 		if (
 			(StateToCheck == EActionState::Preparing && Consideration->GetConsiderationAppliesTo() == EConsiderationApplication::Execute) ||

@@ -269,7 +269,7 @@ struct  FWorldModel
 			{
 				if (SpottedChar.SpottedActionComponent)
 				{
-					FWorldModelActor SpottedActor = FWorldModelActor(SpottedChar.GetLastSpottedLocation(), SpottedChar.SpottedActionComponent);
+					FWorldModelActor SpottedActor = FWorldModelActor(SpottedChar.SpottedActionComponent->GetOwner()->GetActorLocation(), SpottedChar.SpottedActionComponent);
 					KnownActors.Add(SpottedActor);
 				}
 			}

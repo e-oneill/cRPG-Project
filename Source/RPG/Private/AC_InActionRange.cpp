@@ -11,14 +11,15 @@ bool UAC_InActionRange::CheckConsideration_Implementation(UGameplayActionCompone
 	{
 		return false;
 	}
+	FVector InternalLocation = TargetLocation;
 	//World geometry StaticMeshActors may cause this to behave strangely, worth finding a way to check that the target actor is not world geometry
 	if (TargetActor)
 	{
-		TargetLocation = TargetActor->GetActorLocation();
+		InternalLocation = TargetActor->GetActorLocation();
 	}
 	FVector OwnerLocation = Actor->GetOwner()->GetActorLocation();
 	float DistToCheck = Action->GetActionRange();
-	float Distance = FVector::Dist(OwnerLocation, TargetLocation);
+	float Distance = FVector::Dist(OwnerLocation, InternalLocation);
 
 	return Distance <= DistToCheck;
 }

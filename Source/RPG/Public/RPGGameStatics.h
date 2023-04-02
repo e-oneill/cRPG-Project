@@ -17,6 +17,7 @@ class RPG_API URPGGameStatics : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
+
 	UFUNCTION(BlueprintPure, Category = "RPG|Game State")
 	static UEncounterManager* GetEncounterManager(UWorld* World);
 };

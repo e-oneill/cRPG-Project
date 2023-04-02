@@ -73,9 +73,9 @@ void ARPGAIController::GetPlanAndExecute()
 	ActionPlan.RemoveAt(0);
 }
 
-void ARPGAIController::ExecuteNextAction(TArray<FPlanEntry>& Plan)
+void ARPGAIController::ExecuteNextAction()
 {
-	if (Plan.Num() == 0)
+	if (ActionPlan.Num() == 0)
 	{
 		//Plan is empty
 		HandleFinishPlan();
@@ -83,30 +83,38 @@ void ARPGAIController::ExecuteNextAction(TArray<FPlanEntry>& Plan)
 	}
 
 	//if the next entry in plan is NULL, that means the DO_NOTHING action has been queued.
-	while (Plan[0].Action == NULL)
+	while (ActionPlan[0].Action == NULL)
 	{
-		Plan.RemoveAt(0);
+		ActionPlan.RemoveAt(0);
 		//if after removing the DO_NOTHING action the plan is empty, return
-		if (Plan.Num() == 0)
+		if (ActionPlan.Num() == 0)
 		{
 			HandleFinishPlan();
 			return;
 		}
 	}
 
+	UAction* ActionTaken = ActionPlan[0].Action;
+	
 
+	bool bCanTakeAction = ExecutePlanEntry(ActionPlan[0]);
+	//Plan.RemoveAt(0);
 
-	bool bCanTakeAction = ExecutePlanEntry(Plan[0]);
-
-	Plan.RemoveAt(0);
+	if (!bCanTakeAction)
+	{
+		OnActionComplete(ActionTaken, EActionState::Complete, EActionState::Idle);
+	}
+	
+	
 }
 
 bool ARPGAIController::ExecutePlanEntry(FPlanEntry& PlanEntry)
 {
 	FVector TargetLocation = FVector::ZeroVector;
 	AActor* TargetActor = nullptr;
+	UAction* Action = PlanEntry.Action;
 	
-	if (PlanEntry.TargetActor == nullptr)
+	if (!PlanEntry.TargetActor || !PlanEntry.TargetActor->IsValidLowLevel())
 	{
 		TargetLocation = PlanEntry.TargetLocation;
 	}
@@ -115,25 +123,23 @@ bool ARPGAIController::ExecutePlanEntry(FPlanEntry& PlanEntry)
 		TargetActor = PlanEntry.TargetActor->GetOwner();
 	}
 
+	//assume that this entry is item 0 - as there is no reliable way to == to match this specific entry
+	ActionPlan.RemoveAt(0);
+
+	bool bTakeAction = Action->TryExecuteAction(TargetLocation, TargetActor);
+
 	
 
-	bool bTakeAction = PlanEntry.Action->TryExecuteAction(TargetLocation, TargetActor);
 	if (bTakeAction)
 	{
-		PlanEntry.Action->OnActionComplete.AddUniqueDynamic(this, &ARPGAIController::OnActionComplete);
+		Action->OnActionComplete.AddUniqueDynamic(this, &ARPGAIController::OnActionComplete);
 	}
-	else
-	{
-		OnActionComplete(PlanEntry.Action, EActionState::Complete, EActionState::Idle);
-	}
-
 
 	return bTakeAction;
 }
 
 void ARPGAIController::HandleFinishPlan()
 {
-	UE_LOG(LogTemp, Log, TEXT("Finished Action Plan"));
 	ActionPlan = GOAPPlanner->FindPlan();
 	if (ActionPlan.IsEmpty())
 	{
@@ -145,7 +151,7 @@ void ARPGAIController::HandleFinishPlan()
 	}
 	else
 	{
-		ExecuteNextAction(ActionPlan);
+		ExecuteNextAction();
 	}
 }
 
@@ -164,7 +170,7 @@ void ARPGAIController::OnTurnStart(UTurn* NewTurn)
 
 	ActionPlan = GOAPPlanner->FindPlan();
 
-	ExecuteNextAction(ActionPlan);
+	ExecuteNextAction();
 }
 
 void ARPGAIController::OnActionComplete(UAction* CompletedAction, EActionState State, EActionState OldState)
@@ -176,7 +182,7 @@ void ARPGAIController::OnActionComplete(UAction* CompletedAction, EActionState S
 
 	if (ActionPlan.Num() > 0)
 	{
-		ExecuteNextAction(ActionPlan);
+		ExecuteNextAction();
 	}
 	else
 	{
@@ -241,12 +247,7 @@ void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)
 				else if (!bSpottedCharInEncounter && bAIAgentInEncounter)
 				{
 					//we are alerted, start a combat encounter
-					StartEncounterWithSpottedCharacter(PawnActionComponent);
-				}
-				else
-				{
-					//we have a turn, so add the character to this encounter
-					UE_LOG(LogTemp, Warning, TEXT("I am already in an encounter!"));
+					
 
 					AEncounter* MyEncounter = ActionComponent->GetTurn()->GetEncounter().Get();
 					if (!MyEncounter)
@@ -254,6 +255,10 @@ void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)
 						UE_LOG(LogRPG, Error, TEXT("This character has a turn without an encounter"));
 					}
 					MyEncounter->AddCharacterToEncounter(SpottedCharacter.SpottedActionComponent);
+				}
+				else
+				{
+					StartEncounterWithSpottedCharacter(PawnActionComponent);
 				}
 			}
 		}

@@ -10,9 +10,16 @@ struct FPlanEntry
 {
 	GENERATED_BODY();
 
+	UPROPERTY()
 	UAction* Action;
 
 	FVector TargetLocation;
 
+	UPROPERTY()
 	UGameplayActionComponent* TargetActor;
+
+	bool operator==(FPlanEntry const& otherEntry)
+	{
+		return Action == otherEntry.Action && TargetLocation == otherEntry.TargetLocation && TargetActor == otherEntry.TargetActor;
+	}
 };

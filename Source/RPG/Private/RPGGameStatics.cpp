@@ -11,7 +11,7 @@ UEncounterManager* URPGGameStatics::GetEncounterManager(UWorld* World)
 		return nullptr;
 	}
 
-	ARPGGameState GS = World->GetGameState<ARPGGameState>();
+	ARPGGameState* GameState = World->GetGameState<ARPGGameState>();
 	if (!GameState)
 	{
 		return nullptr;
