@@ -23,8 +23,7 @@ public:
 
 	float GetCueLength() override;
 
-	UFUNCTION()
-	void StopCuePlayback(UAction* InAction, EActionState State, EActionState OldState);
+	virtual void StopCuePlayback(UAction* InAction, EActionState State, EActionState OldState) override;
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -32,8 +31,5 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	UAudioComponent* PlayingSound;
 	UPROPERTY(BlueprintReadOnly)
-	bool bLooping = false;
-	UPROPERTY(BlueprintReadOnly)
 	bool b2DSound = false;
-	ECueExecuteTime EndOn;
 };

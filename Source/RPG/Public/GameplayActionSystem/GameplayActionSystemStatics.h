@@ -6,6 +6,8 @@
 #include "GameplayTagContainer.h"
 #include "Animation/AnimMontage.h"
 #include "Sound/SoundCue.h"
+
+class UFXSystemAsset;
 //#include "ActionEffect.h"
 #include "GameplayActionSystemStatics.generated.h"
 /**
@@ -206,10 +208,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
 	USoundCue* SoundCue;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio || Type == ECueType::Particle", EditConditionHides))
 	bool bLoop = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio && bLoop", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Particle", EditConditionHides))
+	UFXSystemAsset* ParticleSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Particle && (Target == ECueTarget::Source || Target == ECueTarget::Target)", EditConditionHides))
+	FName AttachToSocket;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "bLoop", EditConditionHides))
 	ECueExecuteTime EndOn;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (DisplayName = "2D Sound", EditCondition = "Type == ECueType::Audio", EditConditionHides))
