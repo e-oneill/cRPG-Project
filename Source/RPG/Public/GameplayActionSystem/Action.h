@@ -122,7 +122,7 @@ protected:
 	UTexture2D* ActionIcon;
 
 	//set to -1 to indicate that the action has infinite range
-	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = -1.f))
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (ClampMin = -1.f))
 	float ActionRange;
 
 	UPROPERTY(EditAnywhere, Category="Action")

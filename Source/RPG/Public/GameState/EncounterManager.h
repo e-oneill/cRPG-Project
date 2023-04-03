@@ -40,6 +40,9 @@ public:
 	AEncounter* StartEncounter(TArray<UGameplayActionComponent*> InComponents);
 
 	UFUNCTION(BlueprintCallable)
+	AEncounter* CombineEncounters(AEncounter* EncounterA, AEncounter* EncounterB);
+
+	UFUNCTION(BlueprintCallable)
 	void EndEncounter(AEncounter* InEncounter);
 
 	TArray<AEncounter*> GetEncounters() const { return Encounters; }

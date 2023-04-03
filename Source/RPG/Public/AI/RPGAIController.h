@@ -100,13 +100,21 @@ public:
 
 
 protected:
+	UPROPERTY()
 	UPlayerControlComponent* PlayerControlComponent;
-	
+	UPROPERTY()
 	UGameplayActionComponent* ActionComponent;
+
+	UPROPERTY()
+	int PlansTried;
+	//putting a hard stop so it only tries 5 plans per turn before ending
+	int MaxPlansTried = 5;
+
 
 	UPROPERTY(VisibleAnywhere)
 	UGOAPPlanningComponent* GOAPPlanner;
 
+	UPROPERTY()
 	UTurn* Turn;
 
 	TArray<FPlanEntry> ActionPlan;
@@ -127,7 +135,9 @@ protected:
 
 	void StartEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
 
-	void ExecuteNextAction(TArray<FPlanEntry>& Plan);
+	void JoinEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
+
+	void ExecuteNextAction();
 
 	bool ExecutePlanEntry(FPlanEntry& PlanEntry);
 

@@ -89,6 +89,10 @@ public:
 	TArray<UTurn*> GetTurns() const { return Turns; }
 	void SetTurns(TArray<UTurn*> val) { Turns = val; }
 
+	void AddTurn(UTurn* InTurn);
+	
+
+
 	UTurn* GetCurrentTurn() const { return CurrentTurn; }
 	void SetCurrentTurn(UTurn* val) { CurrentTurn = val; }
 
