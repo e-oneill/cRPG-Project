@@ -126,7 +126,13 @@ void AEncounter::AddCharacterToEncounter(UGameplayActionComponent* InActionCompo
 
 		return;
 	}
-	UTurn* Turn = NewObject<UTurn>(this, UTurn::StaticClass());
+
+	FString OwnerName = InActionComponent->GetOwner()->GetName();
+	FName TurnName = FName(FString("Turn_") + OwnerName);
+	
+
+
+	UTurn* Turn = NewObject<UTurn>(this, UTurn::StaticClass(), TurnName);
 	Turn->InitializeTurn(InActionComponent, this);
 	Turns.Add(Turn);
 	NetMulticast_OnCharacterJoinEncounter(Cast<ARPGCharacter>(InActionComponent->GetOwner()));
@@ -190,6 +196,13 @@ void AEncounter::AddEncounterToUI()
 	}
 	ARPGPlayerController* PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
 	PlayerController->AddEncounterToUI(this);
+}
+
+void AEncounter::AddTurn(UTurn* InTurn)
+{
+	Turns.Add(InTurn);
+	InTurn->SetEncounter(this);
+	NetMulticast_OnCharacterJoinEncounter(Cast<ARPGCharacter>(InTurn->GetActionComponent()->GetOwner()));
 }
 
 void AEncounter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -100,6 +100,14 @@ AEncounter* UEncounterManager::StartEncounter(TArray<UGameplayActionComponent*> 
 
 AEncounter* UEncounterManager::CombineEncounters(AEncounter* EncounterA, AEncounter* EncounterB)
 {
+
+	//Add all the turns from EncounterB to EncounterA
+
+	for (int i = 0; i < EncounterB->GetTurns().Num(); i++)
+	{
+		EncounterA->AddTurn(EncounterB->GetTurns()[i]);
+	}
+
 	return nullptr;
 }
 
