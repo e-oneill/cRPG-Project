@@ -143,6 +143,11 @@ protected:
 
 	void HandleFinishPlan();
 
+	void EndTurn();
+	FTimerHandle EndTurnTimer;
+	UFUNCTION()
+	void EndTurnCallback();
+
 	UFUNCTION()
 	void OnTurnAssigned(UTurn* NewTurn);
 	UFUNCTION()

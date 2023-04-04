@@ -143,15 +143,35 @@ void ARPGAIController::HandleFinishPlan()
 	ActionPlan = GOAPPlanner->FindPlan();
 	if (ActionPlan.IsEmpty())
 	{
-		if (Turn)
-		{
-			AEncounter* Encounter = Turn->GetEncounter().Get();
-			Encounter->EndCurrentTurn();
-		}
+		EndTurn();
 	}
 	else
 	{
 		ExecuteNextAction();
+	}
+}
+
+void ARPGAIController::EndTurn()
+{
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	if (!TimerManager.IsTimerActive(EndTurnTimer))
+	{
+		TimerManager.SetTimer(EndTurnTimer, this, &ARPGAIController::EndTurnCallback, 0.5f, false, -1.f);
+	}
+	
+
+	
+}
+
+void ARPGAIController::EndTurnCallback()
+{
+	if (Turn)
+	{
+		AEncounter* Encounter = Turn->GetEncounter().Get();
+		if (Encounter->GetCurrentTurn() == Turn)
+		{
+			Encounter->EndCurrentTurn();
+		}
 	}
 }
 
@@ -169,8 +189,14 @@ void ARPGAIController::OnTurnStart(UTurn* NewTurn)
 	}
 
 	ActionPlan = GOAPPlanner->FindPlan();
-
-	ExecuteNextAction();
+	if (ActionPlan.Num() > 0)
+	{
+		ExecuteNextAction();
+	}
+	else
+	{
+		EndTurn();
+	}
 }
 
 void ARPGAIController::OnActionComplete(UAction* CompletedAction, EActionState State, EActionState OldState)
