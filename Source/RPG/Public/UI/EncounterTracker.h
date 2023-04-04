@@ -43,6 +43,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCharacterJoinEncounter(ARPGCharacter* JoiningCharacter, AEncounter* InEncounter);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCharacterLeftEncounter(ARPGCharacter* LeavingCharacter, AEncounter* InEncounter);
+
 public:
 	void SetupEncounter(AEncounter* InEncounter);
 
@@ -50,4 +53,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddTurnToTracker(UTurn* InTurn);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveTurnFromTracker(UTurn* InTurn);
 };

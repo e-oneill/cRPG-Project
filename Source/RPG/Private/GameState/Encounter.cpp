@@ -9,6 +9,8 @@
 #include "Engine/ActorChannel.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "GameFramework/RPGGameState.h"
+#include "ActionSystemTags.h"
 
 extern TAutoConsoleVariable<bool> CVarDebugAll;
 bool Enc_DebugAll = CVarDebugAll.GetValueOnGameThread();
@@ -140,14 +142,19 @@ void AEncounter::AddCharacterToEncounter(UGameplayActionComponent* InActionCompo
 
 void AEncounter::RemoveCharacterFromEncounter(ARPGCharacter* InCharacter)
 {
+	UGameplayActionComponent* CharActionComponent = InCharacter->GetActionComponent();
+	RemoveCharacterFromEncounter(CharActionComponent);
+}
+
+void AEncounter::RemoveCharacterFromEncounter(UGameplayActionComponent* InActionComponent)
+{
 	int Index = -1;
 	for (int i = 0; i < Turns.Num(); i++)
 	{
-		ARPGCharacter* TurnChar = Cast<ARPGCharacter>(Turns[i]->GetActionComponent()->GetOwner());
-		if (TurnChar == InCharacter)
+		if (Turns[i]->GetActionComponent() == InActionComponent)
 		{
-			NetMulticast_OnCharacterLeftEncounter(InCharacter);
-			InCharacter->SetCharacterTurn(nullptr);
+			NetMulticast_OnCharacterLeftEncounter(Cast<ARPGCharacter>(InActionComponent->GetOwner()));
+			InActionComponent->SetTurn(nullptr);
 			Index = i;
 			break;
 		}
@@ -159,6 +166,28 @@ void AEncounter::RemoveCharacterFromEncounter(ARPGCharacter* InCharacter)
 		Turns.RemoveAt(Index);
 		TurnToRemove->Destroy();
 	}
+
+	if (CheckShouldEncounterEnd())
+	{
+		End();
+	}
+}
+
+bool AEncounter::CheckShouldEncounterEnd()
+{
+	ARPGGameState* GameState = GetWorld()->GetGameState<ARPGGameState>();
+	FGameplayTag PlayerFaction = FActionSystemTags::Get().Player_Faction;
+
+	//if there are any hostile chars left, return false
+	for (UTurn* Turn : Turns)
+	{
+		if (GameState->IsFactionHostile(PlayerFaction, Turn->GetActionComponent()->GetFaction()))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void AEncounter::NetMulticast_OnCharacterJoinEncounter_Implementation(ARPGCharacter* InCharacter)
@@ -170,6 +199,7 @@ void AEncounter::NetMulticast_OnCharacterJoinEncounter_Implementation(ARPGCharac
 void AEncounter::NetMulticast_OnCharacterLeftEncounter_Implementation(ARPGCharacter* InCharacter)
 {
 	InCharacter->OnEncounterLeft.Broadcast(InCharacter, this);
+	OnCharacterLeftEncounter.Broadcast(InCharacter, this);
 }
 
 void AEncounter::NetMulticast_OnEncounterStart_Implementation()

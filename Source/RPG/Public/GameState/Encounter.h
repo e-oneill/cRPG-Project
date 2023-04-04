@@ -53,6 +53,9 @@ public:
 	void AddCharacterToEncounter(ARPGCharacter* InCharacter);
 	void AddCharacterToEncounter(UGameplayActionComponent* InActionComponent);
 	void RemoveCharacterFromEncounter(ARPGCharacter* InCharacter);
+	void RemoveCharacterFromEncounter(UGameplayActionComponent* InActionComponent);
+
+	bool CheckShouldEncounterEnd();
 
 #pragma region Network_EventDispatchers
 	UFUNCTION(NetMulticast, Reliable)
@@ -66,6 +69,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FCharacterEncounterEventSignature OnCharacterJoinEncounter;
+	UPROPERTY(BlueprintAssignable)
+	FCharacterEncounterEventSignature OnCharacterLeftEncounter;
 
 	UPROPERTY(BlueprintAssignable)
 	FEncounterEventSignature OnEncounterStart;

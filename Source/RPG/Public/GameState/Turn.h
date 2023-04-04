@@ -60,6 +60,8 @@ public:
 	void StartTurn();
 	void EndTurn();
 
+	void RemoveFromEncounter();
+
 	#pragma region Notification_Events
 	//Broadcast turn start event to all clients
 	UFUNCTION(NetMulticast, Reliable)

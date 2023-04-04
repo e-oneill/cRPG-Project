@@ -33,6 +33,10 @@ protected:
 	UFUNCTION()
 	void OnRep_AttributeValue();
 
+	#pragma region HandleDeathLogic
+	void HandleDeath();
+	#pragma endregion HandleDeathLogic
+
 public:
 	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue = true);
 
@@ -41,9 +45,13 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	
+
 	#pragma region GettersSetters
 	float GetAttributeValue() const { return AttributeValue; }
-	void SetAttributeValue(float val) { AttributeValue = FMath::Clamp(val, 0.f, AttributeBaseValue); OnAttributeChanged.Broadcast(ActionComponent, this); }
+	void SetAttributeValue(float val);
+	
+	
 	FGameplayTag GetAttributeTag() const { return AttributeTag; }
 	void SetAttributeTag(FGameplayTag val) { AttributeTag = val; }
 	float GetAttributeBaseValue() const { return AttributeBaseValue; }

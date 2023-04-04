@@ -4,6 +4,8 @@
 #include "GameplayActionSystem/ActionAttribute.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "ActionSystemTags.h"
+#include "RPGGameStatics.h"
 
 
 
@@ -12,6 +14,8 @@ void UActionAttribute::OnRep_AttributeValue()
 	//if this is firing, the attribute value has changed. Fire the OnChangeEvent
 	OnAttributeChanged.Broadcast(ActionComponent, this);
 }
+
+
 
 UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* OwningComponent,FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue /* = true*/)
 {
@@ -37,4 +41,31 @@ void UActionAttribute::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UActionAttribute, AttributeValue);
 	DOREPLIFETIME(UActionAttribute, ActionComponent);
 
+}
+
+void UActionAttribute::SetAttributeValue(float val)
+{
+	AttributeValue = FMath::Clamp(val, 0.f, AttributeBaseValue); 
+	
+	OnAttributeChanged.Broadcast(ActionComponent, this);
+
+	if (AttributeTag == FActionSystemTags::Get().Attr_Health && AttributeValue <= 0)
+	{
+		//if the attribute is Health, we should run low health logic at zero hp
+		HandleDeath();
+	}
+}
+
+void UActionAttribute::HandleDeath()
+{
+	bool bIsPlayerControlled = (URPGGameStatics::GetActionComponentPlayerController(ActionComponent) != nullptr);
+
+	if (bIsPlayerControlled)
+	{
+		ActionComponent->IsUnconscious(true);	
+	}
+	else
+	{
+		ActionComponent->IsDead(true);
+	}
 }

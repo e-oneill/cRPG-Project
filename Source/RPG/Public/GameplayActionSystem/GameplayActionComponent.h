@@ -23,6 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayTagEventSignature, UGamepl
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMultiTagEventSignature, UGameplayActionComponent*, ChangedComponent, FGameplayTagContainer, ChangedTags);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FActionBindChangeEvent, UAction*, ChangedAction, int32, Slot);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActionComponentTickEvent, float, DeltaTime);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActionComponentEventSignature, UGameplayActionComponent*, TriggerActionComponent);
 
 //this struct is used in the details panel to set up an attribute for the component. On begin play this will be used to create an instance of an attribute
 USTRUCT(BlueprintType)
@@ -52,16 +53,33 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	#pragma region ActionsVariables
 	//a map of actions, where the int32 is the index of the input key and hotbar slot to use for the action. (0-9)
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Replicated, Category = "Gameplay Action System")
 	TArray<UAction*> BoundActions;
-	//TMap<int32, UAction*> BoundActions;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System", Replicated)
+		TArray<UAction*> CharacterActions;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System")
+		TArray<UActionEffect*> ActiveEffects;
+
+	UPROPERTY(EditDefaultsOnly)
+		TArray<TSubclassOf<UAction>> DefaultActions;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System", Replicated)
+		UAction* ActiveAction;
+	#pragma endregion ActionsVariables
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Factions", meta = (Categories = "Faction."))
 	FGameplayTag Faction;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Replicated, Category = "Gameplay Action System")
-	FGameplayTagContainer ActiveGameplayTags;
+		FGameplayTagContainer ActiveGameplayTags;
+
+	UPROPERTY(Replicated)
+		UTurn* Turn;
 
 	#pragma region AttributesVariables
 	//this is used to define an attribute configuration for the character - perhaps i could make this something you can configure in data and simply select a row?
@@ -70,22 +88,11 @@ protected:
 
 	UPROPERTY(Replicated, VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System")
 		TArray<UActionAttribute*> Attributes;
+
+	bool bIsUnconscious = false;
+	bool bIsDead = false;
 	#pragma endregion AttributesVariables
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System", Replicated)
-	TArray<UAction*> CharacterActions;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System")
-	TArray<UActionEffect*> ActiveEffects;
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<UAction>> DefaultActions;
-
-	UPROPERTY(Replicated)
-	UTurn* Turn;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System", Replicated)
-	UAction* ActiveAction;
 
 public:	
 	void AddActiveEffect(UActionEffect* InEffect) {ActiveEffects.Add(InEffect); }
@@ -123,6 +130,15 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 		FAttributeChangeSignature OnAttributeRemoved;
+
+	UPROPERTY(BlueprintAssignable)
+		FActionComponentEventSignature OnKnockedOut;
+
+	UPROPERTY(BlueprintAssignable)
+		FActionComponentEventSignature OnDied;
+
+	UPROPERTY(BlueprintAssignable)
+		FActionComponentEventSignature OnRevived;
 
 	#pragma endregion AttributeInteractions
 
@@ -202,6 +218,16 @@ public:
 
 	UFUNCTION(BlueprintPure)
 		TScriptInterface<IGameplayTaskOwnerInterface> GetTaskOwner() { return TScriptInterface<IGameplayTaskOwnerInterface>(this); }
+
+	FGameplayTag GetFaction() const { return Faction; }
+	void SetFaction(FGameplayTag val) { Faction = val; }
+	TArray<UActionAttribute*> GetAttributes() const { return Attributes; }
+	TArray<UAction*> GetCharacterActions() const { return CharacterActions; }
+	void SetCharacterActions(TArray<UAction*> val) { CharacterActions = val; }
+	bool IsDead() const { return bIsDead; }
+	void IsDead(bool val); 
+	bool IsUnconscious() const { return bIsUnconscious; }
+	void IsUnconscious(bool val);
 	#pragma endregion GettersSetters
 
 	
@@ -217,10 +243,5 @@ public:
 	bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 	#pragma endregion Replication
 
-public:
-	FGameplayTag GetFaction() const { return Faction; }
-	void SetFaction(FGameplayTag val) { Faction = val; }
-	TArray<UActionAttribute*> GetAttributes() const { return Attributes; }
-	TArray<UAction*> GetCharacterActions() const { return CharacterActions; }
-	void SetCharacterActions(TArray<UAction*> val) { CharacterActions = val; }
+	
 };
