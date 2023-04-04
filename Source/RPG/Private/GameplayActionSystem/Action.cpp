@@ -34,7 +34,7 @@ void UAction::Tick_Implementation()
 
 bool UAction::CanPrepareAction_Implementation(FVector TargetLocation /*= FVector::ZeroVector*/, AActor* TargetActor /*= nullptr*/)
 {
-	if (Source->GetActiveGameplayTags().HasAny(BlockedTags))
+	if (Source->IsUnconscious() || Source->IsDead() || Source->GetActiveGameplayTags().HasAny(BlockedTags))
 	{
 		return false;
 	}
@@ -75,7 +75,7 @@ void UAction::PrepareAction_Implementation(FVector TargetLocation /*= FVector::Z
 
 bool UAction::CanExecuteAction_Implementation(FVector TargetLocation /*= FVector::ZeroVector*/, AActor* TargetActor /*= nullptr*/)
 {
-	if (Source->GetActiveGameplayTags().HasAny(BlockedTags))
+	if (Source->IsUnconscious() || Source->IsDead() || Source->GetActiveGameplayTags().HasAny(BlockedTags))
 	{
 		return false;
 	}

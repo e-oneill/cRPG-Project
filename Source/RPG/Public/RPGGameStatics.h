@@ -7,6 +7,8 @@
 #include "RPGGameStatics.generated.h"
 
 class UEncounterManager;
+class UGameplayActionComponent;
+class ARPGPlayerController;
 
 /**
  * 
@@ -20,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "RPG|Game State")
 	static UEncounterManager* GetEncounterManager(UWorld* World);
+
+	UFUNCTION(BlueprintPure, Category = "RPG|Game State")
+	static ARPGPlayerController* GetActionComponentPlayerController(UGameplayActionComponent* ActionComponent);
 };

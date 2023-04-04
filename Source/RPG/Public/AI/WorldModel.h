@@ -155,7 +155,8 @@ struct FWorldModelActor
 		//if this actor has the attribute this effect impacts, apply the effect
 		if (AttributeMap.Contains(ActionEffect.Attribute))
 		{
-			AttributeMap[ActionEffect.Attribute].AttributeValue -= GetMagnitudeForEffect(ActionEffect);
+			float NewValue = AttributeMap[ActionEffect.Attribute].AttributeValue - GetMagnitudeForEffect(ActionEffect);
+			AttributeMap[ActionEffect.Attribute].AttributeValue = FMath::Clamp(NewValue, 0, AttributeMap[ActionEffect.Attribute].AttributeMax);
 		}
 
 		if (ActionEffect.bAppliesStatus)

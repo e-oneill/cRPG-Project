@@ -103,6 +103,16 @@ void UTurn::EndTurn()
 	NetMulticast_OnTurnEnd();
 }
 
+void UTurn::RemoveFromEncounter()
+{
+	AEncounter* EncounterPointer = Encounter.Get();
+
+	if (EncounterPointer)
+	{
+		EncounterPointer->RemoveCharacterFromEncounter(ActionComponent);
+	}
+}
+
 void UTurn::NetMulticast_OnTurnStart_Implementation()
 {
 	if (Turn_DebugAll || Turn_DebugNetwork)

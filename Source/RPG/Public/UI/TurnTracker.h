@@ -20,6 +20,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Init(UTurn* InTurn);
 
+	UTurn* GetTurn() const { return Turn; }
+	void SetTurn(UTurn* val) { Turn = val; }
 protected:
 	UTurn* Turn;
 

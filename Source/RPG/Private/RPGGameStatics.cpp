@@ -3,6 +3,7 @@
 
 #include "RPGGameStatics.h"
 #include "../Public/GameFramework/RPGGameState.h"
+#include "GameplayActionSystem/GameplayActionComponent.h"
 
 UEncounterManager* URPGGameStatics::GetEncounterManager(UWorld* World)
 {
@@ -20,4 +21,18 @@ UEncounterManager* URPGGameStatics::GetEncounterManager(UWorld* World)
 	UEncounterManager* EncounterManager = GameState->GetEncounterManager();
 
 	return EncounterManager;
+}
+
+ARPGPlayerController* URPGGameStatics::GetActionComponentPlayerController(UGameplayActionComponent* ActionComponent)
+{
+	AActor* Owner = ActionComponent->GetOwner();
+
+	UPlayerControlComponent* PlayerControlComponent = Cast<UPlayerControlComponent>(Owner->GetComponentByClass(UPlayerControlComponent::StaticClass()));
+
+	if (!PlayerControlComponent)
+	{
+		return nullptr;
+	}
+
+	return PlayerControlComponent->GetPlayerController();
 }

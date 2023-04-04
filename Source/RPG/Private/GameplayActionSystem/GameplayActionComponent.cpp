@@ -233,6 +233,40 @@ APlayerController* UGameplayActionComponent::GetPlayerController()
 	}
 }
 
+void UGameplayActionComponent::IsDead(bool val)
+{
+	if (bIsDead == false && val == true)
+	{
+		//we are dying
+		bIsDead = val; 
+		OnDied.Broadcast(this);
+		//remove from encounter.
+
+		Turn->RemoveFromEncounter();
+
+	}
+	else if (bIsDead == true && val == false)
+	{
+		//we are resurrecting
+		bIsDead = val;
+		OnRevived.Broadcast(this);
+	}
+}
+
+void UGameplayActionComponent::IsUnconscious(bool val)
+{
+	if (bIsUnconscious == false && val == true)
+	{
+		bIsUnconscious = val;
+		OnKnockedOut.Broadcast(this);
+	}
+	else if (bIsUnconscious == true && val == false)
+	{
+		bIsUnconscious = val;
+		OnRevived.Broadcast(this);
+	}
+}
+
 // Called every frame
 void UGameplayActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {

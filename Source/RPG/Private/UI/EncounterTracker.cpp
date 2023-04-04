@@ -37,6 +37,7 @@ void UEncounterTracker::SetupEncounter(AEncounter* InEncounter)
 	InEncounter->OnCurrentTurnChanged.AddUniqueDynamic(this, &UEncounterTracker::OnCurrentTurnChanged);
 	InEncounter->OnEncounterEnd.AddUniqueDynamic(this, &UEncounterTracker::OnEncounterEnd);
 	InEncounter->OnCharacterJoinEncounter.AddUniqueDynamic(this, &UEncounterTracker::OnCharacterJoinEncounter);
+	InEncounter->OnCharacterLeftEncounter.AddUniqueDynamic(this, &UEncounterTracker::OnCharacterLeftEncounter);
 	//Call method to add the turns to the turn tracker
 	AddTurnsToTracker(InEncounter->GetTurns());
 	//Call the event, since it doesn't fire the first time
@@ -76,5 +77,36 @@ void UEncounterTracker::AddTurnToTracker(UTurn* InTurn)
 		SlotPadding.Left = 12.f;
 		SlotPadding.Right = 12.f;
 		TurnSlot->SetPadding(SlotPadding);
+	}
+}
+
+void UEncounterTracker::RemoveTurnFromTracker(UTurn* InTurn)
+{
+	if (!Turns.Contains(InTurn))
+	{
+		return;
+	}
+
+	Turns.Remove(InTurn);
+	UWidget* WidgetToRemove = nullptr;
+	for (UWidget* TurnWidget : TurnTrackerContainer->GetAllChildren())
+	{
+		UTurnTracker* TurnTracker = Cast<UTurnTracker>(TurnWidget);
+		if (!TurnTracker)
+		{
+			continue;
+		}
+
+		if (TurnTracker->GetTurn() == InTurn)
+		{
+			WidgetToRemove = TurnWidget;
+			break;
+		}
+	}
+
+	if (WidgetToRemove)
+	{
+		TurnTrackerContainer->RemoveChild(WidgetToRemove);
+		//Not certain this will get picked up by garbage collector!
 	}
 }
