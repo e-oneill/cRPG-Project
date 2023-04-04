@@ -15,7 +15,7 @@ void UItemConsumable::UseConsumable_Implementation(AActor* TargetActor, FVector 
 		return;
 	}*/
 
-	Uses--;
+	//Uses--;
 	//Create consumable action and apply it to the target.
 	if (!ConsumableAction)
 	{
@@ -26,7 +26,10 @@ void UItemConsumable::UseConsumable_Implementation(AActor* TargetActor, FVector 
 	if (TargetActionComponent && ConsumableAction)
 	{
 		ConsumableAction->InitializeAction(TargetActionComponent);
-		ConsumableAction->TryExecuteAction(TargetLocation, TargetActor);
+		if (ConsumableAction->TryExecuteAction(TargetLocation, TargetActor))
+		{
+			Uses--;
+		}
 	}
 
 	if (Uses <= 0)
