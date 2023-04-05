@@ -1,0 +1,34 @@
+[
+	{
+		"Name": "WEP_Longsword",
+		"ItemType": "Equippable",
+		"ItemName": "Longsword",
+		"ItemIcon": "/Game/UI/Icons/Equipment/Weapons/TUI_Icon_Longsword.TUI_Icon_Longsword",
+		"bCanStack": false,
+		"CurrStackSize": 1,
+		"MaxStackSize": 0,
+		"ValidSlot": "MAINHAND",
+		"StaticMesh": "/Game/Assets/Meshes/Weapons/Meshes/Longsword/longsword.longsword",
+		"AttachSocket": "hand_rSocket",
+		"GrantsActions": [
+			"/Game/GameplayActions/BP_ActionAttack.BP_ActionAttack_C"
+		],
+		"ConsumableAction": "None",
+		"Uses": 0
+	},
+	{
+		"Name": "CON_HealthPotion",
+		"ItemType": "Consumable",
+		"ItemName": "Lesser Healing Potion",
+		"ItemIcon": "/Game/Characters/Mannequins/Textures/Shared/T_UE_Logo_M.T_UE_Logo_M",
+		"bCanStack": true,
+		"CurrStackSize": 1,
+		"MaxStackSize": 20,
+		"ValidSlot": "MAINHAND",
+		"StaticMesh": "None",
+		"AttachSocket": "hand_rSocket",
+		"GrantsActions": [],
+		"ConsumableAction": "/Game/GameplayActions/BP_Heal.BP_Heal_C",
+		"Uses": 1
+	}
+]
