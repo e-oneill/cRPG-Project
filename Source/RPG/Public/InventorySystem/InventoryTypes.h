@@ -50,19 +50,6 @@ public:
 		FDataTableRowHandle PreEquippedItem;*/
 };
 
-USTRUCT(BlueprintType)
-struct FInventoryLoadSlot
-{
-	GENERATED_BODY()
-
-public:
-	//the item in this slot
-	UPROPERTY(EditDefaultsOnly)
-		FDataTableRowHandle ItemData;
-	//should this item be equipped on BeginPlay
-	UPROPERTY(EditDefaultsOnly)
-		bool bAutoEquip;
-};
 
 USTRUCT(BlueprintType)
 struct FInventoryItemData : public FTableRowBase
@@ -82,10 +69,10 @@ struct FInventoryItemData : public FTableRowBase
 	UPROPERTY(EditAnywhere)
 		bool bCanStack;
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Equippable Item", meta = (EditCondition = "bCanStack", EditConditionHides))
+	UPROPERTY(VisibleInstanceOnly, meta = (EditCondition = "bCanStack", EditConditionHides))
 		int32 CurrStackSize = 1;
 
-	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "bCanStack", EditConditionHides))
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "bCanStack", EditConditionHides))
 		int32 MaxStackSize;
 
 	#pragma endregion Base Item
@@ -112,4 +99,19 @@ struct FInventoryItemData : public FTableRowBase
 	int32 Uses;
 	#pragma endregion Consumable Item
 	
+};
+
+
+USTRUCT(BlueprintType)
+struct FInventoryLoadSlot
+{
+	GENERATED_BODY()
+
+public:
+	//the item in this slot
+	UPROPERTY(EditDefaultsOnly)
+		FDataTableRowHandle ItemData;
+	//should this item be equipped on BeginPlay
+	UPROPERTY(EditDefaultsOnly)
+		bool bAutoEquip;
 };

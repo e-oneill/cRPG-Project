@@ -12,15 +12,15 @@ UItemBase* UInventorySystemStatics::AddItemToInventoryFromData(FDataTableRowHand
 {
 	 FInventoryItemData* ItemData = ItemDataHandle.GetRow<FInventoryItemData>(FString(ItemDataHandle.RowName.ToString()));
 	 ItemData->RowName = ItemDataHandle.RowName;
-	 UItemBase* Item = CreateItemFromData(ItemData);
+	 UItemBase* Item = CreateItemFromData(*ItemData);
 	 InventoryToAddTo->AddItemToInventory(Item);
 	 return Item;
 }
 
-UItemBase* UInventorySystemStatics::CreateItemFromData(FInventoryItemData* ItemData)
+UItemBase* UInventorySystemStatics::CreateItemFromData(const FInventoryItemData& ItemData)
 {
 	UItemBase* Item;
-	switch (ItemData->ItemType)
+	switch (ItemData.ItemType)
 	{
 	case EItemType::Equippable:
 		Item = NewObject<UItemEquippable>();
@@ -33,6 +33,6 @@ UItemBase* UInventorySystemStatics::CreateItemFromData(FInventoryItemData* ItemD
 		break;
 		
 	}
-	Item->InitializeItem(*ItemData);
+	Item->InitializeItem(ItemData);
 	return Item;
 }

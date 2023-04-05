@@ -10,9 +10,9 @@ void UItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME(UItemBase, StackSize);
 }
 
-void UItemBase::InitializeItem(FInventoryItemData& ItemData)
+void UItemBase::InitializeItem(const FInventoryItemData& ItemData)
 {
-	ItemIcon = ItemData.ItemIcon.Get();
+	ItemIcon = ItemData.ItemIcon.LoadSynchronous();
 	ItemName = ItemData.ItemName;
 	bCanStack = ItemData.bCanStack;
 	StackSize = ItemData.CurrStackSize;

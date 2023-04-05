@@ -50,11 +50,11 @@ void UItemConsumable::PostInitProperties()
 	InitialUses = Uses;
 }
 
-void UItemConsumable::InitializeItem(FInventoryItemData& ItemData)
+void UItemConsumable::InitializeItem(const FInventoryItemData& ItemData)
 {
 	Super::InitializeItem(ItemData);
 
-	ConsumableActionType = ItemData.ConsumableAction.Get();
+	ConsumableActionType = ItemData.ConsumableAction.LoadSynchronous();
 	Uses = ItemData.Uses;
 	InitialUses = Uses;
 

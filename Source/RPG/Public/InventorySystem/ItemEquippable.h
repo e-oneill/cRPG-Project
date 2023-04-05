@@ -73,6 +73,6 @@ public:
 	
 	
 
-	void InitializeItem(FInventoryItemData& ItemData) override;
+	void InitializeItem(const FInventoryItemData& ItemData) override;
 
 };

@@ -52,7 +52,7 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	virtual void InitializeItem(FInventoryItemData& ItemData);
+	virtual void InitializeItem(const FInventoryItemData& ItemData);
 
 	#pragma region UIInterface
 	UFUNCTION(BlueprintCallable)

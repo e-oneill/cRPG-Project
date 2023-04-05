@@ -19,9 +19,9 @@ class RPG_API UInventorySystemStatics : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-
+	UFUNCTION(BlueprintCallable)
 	static UItemBase* AddItemToInventoryFromData(FDataTableRowHandle ItemDataHandle, UInventoryComponent* InventoryToAddTo);
-
-	static UItemBase* CreateItemFromData(FInventoryItemData* ItemData);
+	UFUNCTION(BlueprintCallable)
+	static UItemBase* CreateItemFromData(const FInventoryItemData& ItemData);
 	
 };

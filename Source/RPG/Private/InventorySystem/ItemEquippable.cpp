@@ -18,6 +18,7 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		UE_LOG(LogRPG, Error, TEXT("%s: Tried to equip item on an actor that does not have an action component. The inventory system system relies on the action system to grant actions"), *InEquipper->GetOwner()->GetName());
 		return;
 	}
+	
 
 	ItemStaticMeshComponent = NewObject<UStaticMeshComponent>(EquipperActionComponent->GetOwner(), UStaticMeshComponent::StaticClass(), (TEXT("%s-%s-%s"), *Equipper->GetOwner()->GetName(), *GetName(), *ItemStaticMesh->GetName()));
 	if (ItemStaticMeshComponent)
@@ -84,12 +85,12 @@ FEquippedSlot& UItemEquippable::GetEquippedSlot()
 	return Equipper->GetEquippedSlotFromItem(this);
 }
 
-void UItemEquippable::InitializeItem(FInventoryItemData& ItemData)
+void UItemEquippable::InitializeItem(const FInventoryItemData& ItemData)
 {
 	Super::InitializeItem(ItemData);
 
 	ValidSlot = ItemData.ValidSlot;
-	ItemStaticMesh = ItemData.StaticMesh.Get();
+	ItemStaticMesh = ItemData.StaticMesh.LoadSynchronous();
 	AttachSocket = ItemData.AttachSocket;
 
 	for (TSoftClassPtr<UAction> ItemClass : ItemData.GrantsActions)
