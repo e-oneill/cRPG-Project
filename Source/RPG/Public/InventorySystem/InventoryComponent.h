@@ -28,6 +28,9 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FInventoryLoadSlot> PreloadInventory;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated)
 	TArray<UItemBase*> Inventory;
 
@@ -45,10 +48,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	UFUNCTION(BlueprintCallable)
 	void AddItemToInventory(UItemBase* Item);
+
 	UFUNCTION(BlueprintCallable)
 	void RemoveItemFromInventory(UItemBase* Item);
+
+
 
 	UGameplayActionComponent* GetActionComponentFromInventory();
 
@@ -80,7 +87,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 		FOnEquipmentChanged OnEquipmentChanged;
 
-public:
 	TArray<UItemBase*> GetInventory() const { return Inventory; }
 	void SetInventory(TArray<UItemBase*> val) { Inventory = val; }
 };

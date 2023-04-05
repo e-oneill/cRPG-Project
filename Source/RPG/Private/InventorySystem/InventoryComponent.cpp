@@ -8,6 +8,7 @@
 #include "../RPG.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
 #include "InventorySystem/ItemEquippable.h"
+#include "InventorySystem/InventorySystemStatics.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -37,6 +38,21 @@ void UInventoryComponent::BeginPlay()
 
 	// ...
 	
+	for (FInventoryLoadSlot& PreloadItem : PreloadInventory)
+	{
+		UItemBase* Item = UInventorySystemStatics::AddItemToInventoryFromData(PreloadItem.ItemData, this);
+		
+		if (PreloadItem.bAutoEquip)
+		{
+			UItemEquippable* ItemEquippable = Cast<UItemEquippable>(Item);
+			if (!ItemEquippable)
+			{
+				continue;
+			}
+			EquipSlot(ItemEquippable->GetValidSlot(), ItemEquippable);
+		}
+	}
+
 }
 
 

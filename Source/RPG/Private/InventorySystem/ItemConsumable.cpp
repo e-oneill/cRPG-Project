@@ -9,14 +9,6 @@
 
 void UItemConsumable::UseConsumable_Implementation(AActor* TargetActor, FVector TargetLocation /*= FVector::ZeroVector*/)
 {
-	/*if (!GetOuter()->HasAuthority())
-	{
-		UE_LOG(LogRPG, Error, TEXT("Consumable item attempted to use from client, this should be executed on the server"));
-		return;
-	}*/
-
-	//Uses--;
-	//Create consumable action and apply it to the target.
 	if (!ConsumableAction)
 	{
 		ConsumableAction = NewObject<UAction>(this, ConsumableActionType);
@@ -56,5 +48,16 @@ void UItemConsumable::PostInitProperties()
 {
 	Super::PostInitProperties();
 	InitialUses = Uses;
+}
+
+void UItemConsumable::InitializeItem(FInventoryItemData& ItemData)
+{
+	Super::InitializeItem(ItemData);
+
+	ConsumableActionType = ItemData.ConsumableAction.Get();
+	Uses = ItemData.Uses;
+	InitialUses = Uses;
+
+
 }
 

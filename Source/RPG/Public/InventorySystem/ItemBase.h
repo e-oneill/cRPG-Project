@@ -8,6 +8,7 @@
 #include "ItemBase.generated.h"
 
 class UInventoryComponent;
+struct FInventoryItemData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNonStaticItemEvent);
 
@@ -38,6 +39,7 @@ protected:
 	UInventoryComponent* OwningInventory;
 
 public:
+	#pragma region Getters_Setters
 	bool CanStack() const { return bCanStack; }
 	void CanStack(bool val) { bCanStack = val; }
 	int32 GetMaxStackSize() const { return MaxStackSize; }
@@ -46,10 +48,13 @@ public:
 	void SetStackSize(int32 val) { StackSize = val; OnItemUpdate.Broadcast(); }
 	UInventoryComponent* GetOwningInventory() const { return OwningInventory; }
 	void SetOwningInventory(UInventoryComponent* val) { OwningInventory = val; }
+	#pragma endregion Getters_Setters
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	virtual void InitializeItem(FInventoryItemData& ItemData);
 
+	#pragma region UIInterface
 	UFUNCTION(BlueprintCallable)
 	FName GetNameForUI() override
 	{
@@ -61,6 +66,8 @@ public:
 	{
 		return ItemIcon;
 	}
+	#pragma endregion UIInterface
+	
 	//event that should be used to notify when an item's data changes. Only add this to properties that should change at runtime
 	UPROPERTY(BlueprintAssignable)
 		FNonStaticItemEvent OnItemUpdate;

@@ -4,6 +4,7 @@
 #include "InventorySystem/ItemEquippable.h"
 #include "InventorySystem/InventoryComponent.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "GameplayActionSystem/Action.h"
 #include "../RPG.h"
 
 void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FEquippedSlot& InEquippedSlot)
@@ -81,4 +82,20 @@ FEquippedSlot& UItemEquippable::GetEquippedSlot()
 
 
 	return Equipper->GetEquippedSlotFromItem(this);
+}
+
+void UItemEquippable::InitializeItem(FInventoryItemData& ItemData)
+{
+	Super::InitializeItem(ItemData);
+
+	ValidSlot = ItemData.ValidSlot;
+	ItemStaticMesh = ItemData.StaticMesh.Get();
+	AttachSocket = ItemData.AttachSocket;
+
+	for (TSoftClassPtr<UAction> ItemClass : ItemData.GrantsActions)
+	{
+		GrantsActions.Add(ItemClass.Get());
+	}
+
+	
 }
