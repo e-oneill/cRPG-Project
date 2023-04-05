@@ -4,6 +4,7 @@
 #include "InventorySystem/ItemEquippable.h"
 #include "InventorySystem/InventoryComponent.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "GameplayActionSystem/Action.h"
 #include "../RPG.h"
 
 void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FEquippedSlot& InEquippedSlot)
@@ -17,6 +18,7 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		UE_LOG(LogRPG, Error, TEXT("%s: Tried to equip item on an actor that does not have an action component. The inventory system system relies on the action system to grant actions"), *InEquipper->GetOwner()->GetName());
 		return;
 	}
+	
 
 	ItemStaticMeshComponent = NewObject<UStaticMeshComponent>(EquipperActionComponent->GetOwner(), UStaticMeshComponent::StaticClass(), (TEXT("%s-%s-%s"), *Equipper->GetOwner()->GetName(), *GetName(), *ItemStaticMesh->GetName()));
 	if (ItemStaticMeshComponent)
@@ -25,6 +27,7 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		ItemStaticMeshComponent->RegisterComponent();
 		ItemStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ItemStaticMeshComponent->SetSimulatePhysics(false);
+		ItemStaticMeshComponent->bUseAttachParentBound = true;
 		//get the skeletal mesh for the equipper and attach to a socket on it.
 		USkeletalMeshComponent* EquipperSkeletalMesh = Cast<USkeletalMeshComponent>(Equipper->GetOwner()->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 		if (EquipperSkeletalMesh)
@@ -81,4 +84,20 @@ FEquippedSlot& UItemEquippable::GetEquippedSlot()
 
 
 	return Equipper->GetEquippedSlotFromItem(this);
+}
+
+void UItemEquippable::InitializeItem(const FInventoryItemData& ItemData)
+{
+	Super::InitializeItem(ItemData);
+
+	ValidSlot = ItemData.ValidSlot;
+	ItemStaticMesh = ItemData.StaticMesh.LoadSynchronous();
+	AttachSocket = ItemData.AttachSocket;
+
+	for (TSoftClassPtr<UAction> ItemClass : ItemData.GrantsActions)
+	{
+		GrantsActions.Add(ItemClass.Get());
+	}
+
+	
 }

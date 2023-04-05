@@ -32,6 +32,6 @@ bool AInteractableActor::CanInteract_Implementation(AActor* Interactor)
 
 bool AInteractableActor::Interact_Implementation(AActor* Interactor)
 {
-	return true;
+	return IInteractable::Execute_CanInteract(this, Interactor);
 }
 

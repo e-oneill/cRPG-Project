@@ -36,4 +36,7 @@ public:
 
 	void PostInitProperties() override;
 
+
+	void InitializeItem(const FInventoryItemData& ItemData) override;
+
 };
