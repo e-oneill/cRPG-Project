@@ -28,6 +28,7 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		ItemStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ItemStaticMeshComponent->SetSimulatePhysics(false);
 		ItemStaticMeshComponent->bUseAttachParentBound = true;
+		//ItemStaticMeshComponent->Shadow
 		//get the skeletal mesh for the equipper and attach to a socket on it.
 		USkeletalMeshComponent* EquipperSkeletalMesh = Cast<USkeletalMeshComponent>(Equipper->GetOwner()->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 		if (EquipperSkeletalMesh)
