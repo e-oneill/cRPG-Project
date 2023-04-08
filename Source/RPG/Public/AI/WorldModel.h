@@ -8,6 +8,7 @@
 #include "GameplayActionSystem/Action.h"
 #include "GameplayActionSystem/Actions/Action_Move.h"
 #include "GameFramework/RPGGameState.h"
+#include "ActionSystemTags.h"
 #include "WorldModel.generated.h"
 
 
@@ -298,7 +299,11 @@ struct  FWorldModel
 		//for now just return the first hostile actor we know about
 		for (FWorldModelActor& KnownActor : KnownActors)
 		{
-			if (GameState->IsFactionHostile(KnownActor.Faction, Self.Faction))
+			FGameplayTag HealthAttributeTag = FActionSystemTags::Get().Attr_Health;
+			FWorldModelAttribute* HealthAttribute = KnownActor.AttributeMap.Find(HealthAttributeTag);
+			//breaking this out in case we later decide to have AI potentially attack downed characters to kill them
+			bool bHasHealthRemaining = HealthAttribute && HealthAttribute->AttributeValue > 0;
+			if (bHasHealthRemaining && GameState->IsFactionHostile(KnownActor.Faction, Self.Faction))
 			{
 				return KnownActor;
 			}
