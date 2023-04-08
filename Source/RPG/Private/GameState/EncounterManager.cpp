@@ -98,6 +98,17 @@ AEncounter* UEncounterManager::StartEncounter(TArray<UGameplayActionComponent*> 
 	return NewEncounter;
 }
 
+AEncounter* UEncounterManager::AddComponentToEncounter(UGameplayActionComponent* InComponent, AEncounter* InEncounter)
+{
+	InEncounter->AddCharacterToEncounter(InComponent);
+	return InEncounter;
+}
+
+AEncounter* UEncounterManager::RemoveComponentFromEncounter(UGameplayActionComponent* InComponent, AEncounter* InEncounter)
+{
+	return InEncounter;
+}
+
 AEncounter* UEncounterManager::CombineEncounters(AEncounter* EncounterA, AEncounter* EncounterB)
 {
 
