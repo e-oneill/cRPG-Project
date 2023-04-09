@@ -40,6 +40,11 @@ public:
 	AEncounter* StartEncounter(TArray<UGameplayActionComponent*> InComponents);
 
 	UFUNCTION(BlueprintCallable)
+	AEncounter* AddComponentToEncounter(UGameplayActionComponent* InComponent, AEncounter* InEncounter);
+	UFUNCTION(BlueprintCallable)
+	AEncounter* RemoveComponentFromEncounter(UGameplayActionComponent* InComponent, AEncounter* InEncounter);
+
+	UFUNCTION(BlueprintCallable)
 	AEncounter* CombineEncounters(AEncounter* EncounterA, AEncounter* EncounterB);
 
 	UFUNCTION(BlueprintCallable)

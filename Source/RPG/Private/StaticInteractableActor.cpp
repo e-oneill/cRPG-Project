@@ -7,4 +7,5 @@
 AStaticInteractableActor::AStaticInteractableActor() : Super()
 {
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	this->SetRootComponent(MeshComponent);
 }

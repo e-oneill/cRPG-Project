@@ -259,6 +259,7 @@ void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)
 				//declaring bools for handling the possible cases here
 				bool bSpottedCharInEncounter = SpottedCharacter.SpottedActionComponent->GetTurn() != nullptr;
 				bool bAIAgentInEncounter = ActionComponent->GetTurn() != nullptr;
+				
 
 				//if the spotted ca
 				if (bSpottedCharInEncounter && !bAIAgentInEncounter)
@@ -266,23 +267,16 @@ void ARPGAIController::HandlePawnSpotted(APawn* SeenPawn)
 					AEncounter* SpottedCharacterEncounter = SpottedCharacter.SpottedActionComponent->GetTurn()->GetEncounter().Get();
 					SpottedCharacterEncounter->AddCharacterToEncounter(ActionComponent);
 				}
-				else if (bSpottedCharInEncounter && bAIAgentInEncounter)
+				else if (bSpottedCharInEncounter && bAIAgentInEncounter && SpottedCharacter.SpottedActionComponent->GetTurn()->GetEncounter().Get() != ActionComponent->GetTurn()->GetEncounter().Get())
 				{
-					JoinEncountersWithSpottedCharacter(SpottedCharacter.SpottedActionComponent);
+
+					CombineEncountersWithSpottedCharacter(SpottedCharacter.SpottedActionComponent);
 				}
 				else if (!bSpottedCharInEncounter && bAIAgentInEncounter)
 				{
-					//we are alerted, start a combat encounter
-					
-
-					AEncounter* MyEncounter = ActionComponent->GetTurn()->GetEncounter().Get();
-					if (!MyEncounter)
-					{
-						UE_LOG(LogRPG, Error, TEXT("This character has a turn without an encounter"));
-					}
-					MyEncounter->AddCharacterToEncounter(SpottedCharacter.SpottedActionComponent);
+					AddSpottedCharacterToMyEncounter(SpottedCharacter.SpottedActionComponent);
 				}
-				else
+				else if (!bSpottedCharInEncounter && !bAIAgentInEncounter)
 				{
 					StartEncounterWithSpottedCharacter(PawnActionComponent);
 				}
@@ -312,7 +306,35 @@ void ARPGAIController::StartEncounterWithSpottedCharacter(UGameplayActionCompone
 
 }
 
-void ARPGAIController::JoinEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter)
+void ARPGAIController::AddSpottedCharacterToMyEncounter(UGameplayActionComponent* SpottedCharacter)
+{
+	
+	AEncounter* MyEncounter = ActionComponent->GetTurn()->GetEncounter().Get();
+	AddComponentToEncounter(SpottedCharacter, MyEncounter);
+}
+
+void ARPGAIController::JoinEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter)
+{
+	AEncounter* TheirEncounter = SpottedCharacter->GetTurn()->GetEncounter().Get();
+	AddComponentToEncounter(ActionComponent, TheirEncounter);
+}
+
+void ARPGAIController::AddComponentToEncounter(UGameplayActionComponent* ComponentToAdd, AEncounter* EncounterToJoin)
+{
+	UEncounterManager* EncounterManager = URPGGameStatics::GetEncounterManager(ComponentToAdd->GetWorld());
+	if (!EncounterManager)
+	{
+		return;
+	}
+	if (!EncounterToJoin)
+	{
+		UE_LOG(LogRPG, Error, TEXT("This character has a turn without an encounter"));
+		return;
+	}
+	EncounterManager->AddComponentToEncounter(ComponentToAdd, EncounterToJoin);
+}
+
+void ARPGAIController::CombineEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter)
 {
 	UEncounterManager* EncounterManager = URPGGameStatics::GetEncounterManager(SpottedCharacter->GetWorld());
 	if (!EncounterManager)
@@ -323,4 +345,6 @@ void ARPGAIController::JoinEncountersWithSpottedCharacter(UGameplayActionCompone
 	AEncounter* MyEncounter = ActionComponent->GetTurn()->GetEncounter().Get();
 	EncounterManager->CombineEncounters(MyEncounter, SpottedCharacterEncounter);
 }
+
+
 

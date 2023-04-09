@@ -134,8 +134,14 @@ protected:
 	void HandleNoiseHeard(APawn* InInstigator, const FVector& Location, float Volume);
 
 	void StartEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
+	
+	void AddSpottedCharacterToMyEncounter(UGameplayActionComponent* SpottedCharacter);
+	
+	void JoinEncounterWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
 
-	void JoinEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
+	void CombineEncountersWithSpottedCharacter(UGameplayActionComponent* SpottedCharacter);
+
+	void AddComponentToEncounter(UGameplayActionComponent* ComponentToAdd, AEncounter* EncounterToJoin);
 
 	void ExecuteNextAction();
 
