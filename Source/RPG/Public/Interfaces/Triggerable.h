@@ -7,7 +7,7 @@
 #include "Triggerable.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Blueprintable)
 class UTriggerable : public UInterface
 {
 	GENERATED_BODY()
@@ -22,9 +22,12 @@ class RPG_API ITriggerable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	bool CanTrigger();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool CanTrigger(AActor* TriggeredBy);
 
-	UFUNCTION(BlueprintNativeEvent)
-	void Trigger();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool TryTrigger(AActor* TriggeredBy);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Trigger(AActor* TriggeredBy);
 };
