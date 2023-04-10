@@ -7,12 +7,14 @@
 #include "InventorySystem/ItemBase.h"
 #include "InventorySystem/ItemEquippable.h"
 #include "InventorySystem/ItemConsumable.h"
+#include "InventorySystem/ItemEquippableWeapon.h"
 
 UItemBase* UInventorySystemStatics::AddItemToInventoryFromData(FDataTableRowHandle ItemDataHandle, UInventoryComponent* InventoryToAddTo)
 {
 	 FInventoryItemData* ItemData = ItemDataHandle.GetRow<FInventoryItemData>(FString(ItemDataHandle.RowName.ToString()));
 	 ItemData->RowName = ItemDataHandle.RowName;
 	 UItemBase* Item = CreateItemFromData(*ItemData);
+	 
 	 InventoryToAddTo->AddItemToInventory(Item);
 	 return Item;
 }
@@ -23,7 +25,7 @@ UItemBase* UInventorySystemStatics::CreateItemFromData(const FInventoryItemData&
 	switch (ItemData.ItemType)
 	{
 	case EItemType::Equippable:
-		Item = NewObject<UItemEquippable>();
+		Item = GetCorrectClassOfEquippableItem(ItemData);
 		break;
 	case EItemType::Consumable:
 		Item = NewObject<UItemConsumable>();
@@ -34,5 +36,26 @@ UItemBase* UInventorySystemStatics::CreateItemFromData(const FInventoryItemData&
 		
 	}
 	Item->InitializeItem(ItemData);
+	return Item;
+}
+
+UItemBase* UInventorySystemStatics::GetCorrectClassOfEquippableItem(const FInventoryItemData& ItemData)
+{
+	UItemBase* Item;
+	switch (ItemData.EquippableType)
+	{
+	case EEquippableType::Weapon:
+		Item = NewObject<UItemEquippableWeapon>();
+		break;
+	case EEquippableType::Armour:
+		//break;
+	case EEquippableType::Trinket:
+		//break;
+	default:
+		Item = NewObject<UItemEquippable>();
+		break;
+
+	}
+
 	return Item;
 }

@@ -11,6 +11,7 @@ class AEncounter;
 class UInGameMenu;
 class UInventoryComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUIManagerSelectedActorChangeEvent, AActor*, SelectedActor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class RPG_API UUIManagementComponent : public UActorComponent
@@ -59,4 +60,7 @@ public:
 
 	AActor* GetSelectedActor() const { return SelectedActor; }
 	void SetSelectedActor(AActor* val) { SelectedActor = val; }
+
+	UPROPERTY(BlueprintAssignable)
+		FUIManagerSelectedActorChangeEvent OnSelectedChanged;
 };

@@ -59,10 +59,7 @@ UAction* UGameplayActionComponent::GrantAction(TSubclassOf<UAction> ActionClassT
 {
 	UAction* NewAction = NewObject<UAction>(this, ActionClassToGrant);
 	GrantAction(NewAction);
-	if (ActionClassToGrant != UAction_Move::StaticClass())
-	{
-		BindActionToNextFreeSlot(NewAction);
-	}
+	
 	return NewAction;
 }
 
@@ -70,6 +67,10 @@ UAction* UGameplayActionComponent::GrantAction(UAction* ActionToGrant)
 {
 	ActionToGrant->InitializeAction(this);
 	CharacterActions.Add(ActionToGrant);
+	if (ActionToGrant->GetClass() != UAction_Move::StaticClass())
+	{
+		BindActionToNextFreeSlot(ActionToGrant);
+	}
 	return ActionToGrant;
 	
 }
