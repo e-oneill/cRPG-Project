@@ -190,8 +190,6 @@ void UMainHUD::HandleSelectedActorChange(AActor* InSelectedActor)
 	//Selected Actor has an action component
 	if (SelectedComponent)
 	{
-		
-
 		//bind to join and leave encounter events (do this first, use same implementation for if turn already exists)
 		SelectedComponent->OnTurnAssigned.AddUniqueDynamic(this, &UMainHUD::OnTurnAssigned);
 		SelectedComponent->OnTurnUnassigned.AddUniqueDynamic(this, &UMainHUD::OnTurnAssigned);

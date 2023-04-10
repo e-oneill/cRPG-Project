@@ -139,5 +139,6 @@ void UUIManagementComponent::ChangeSelectedActor(AActor* Actor)
 	SelectedActor = Actor;
 
 	HUD->HandleSelectedActorChange(SelectedActor);
+	OnSelectedChanged.Broadcast(Actor);
 }
 

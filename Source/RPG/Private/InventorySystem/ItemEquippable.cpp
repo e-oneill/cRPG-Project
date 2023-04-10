@@ -7,6 +7,15 @@
 #include "GameplayActionSystem/Action.h"
 #include "../RPG.h"
 
+void UItemEquippable::GrantActions(UGameplayActionComponent* EquipperActionComponent)
+{
+	for (TSubclassOf<UAction> GrantsActionClass : GrantsActions)
+	{
+		UAction* GrantedAction = EquipperActionComponent->GrantAction(GrantsActionClass);
+		GrantedActions.Add(GrantedAction);
+	}
+}
+
 void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FEquippedSlot& InEquippedSlot)
 {
 	Equipper = InEquipper;
@@ -18,7 +27,6 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		UE_LOG(LogRPG, Error, TEXT("%s: Tried to equip item on an actor that does not have an action component. The inventory system system relies on the action system to grant actions"), *InEquipper->GetOwner()->GetName());
 		return;
 	}
-	
 
 	ItemStaticMeshComponent = NewObject<UStaticMeshComponent>(EquipperActionComponent->GetOwner(), UStaticMeshComponent::StaticClass(), (TEXT("%s-%s-%s"), *Equipper->GetOwner()->GetName(), *GetName(), *ItemStaticMesh->GetName()));
 	if (ItemStaticMeshComponent)
@@ -39,12 +47,7 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		}
 	}
 
-
-	for (TSubclassOf<UAction> GrantsActionClass : GrantsActions)
-	{
-		UAction* GrantedAction = EquipperActionComponent->GrantAction(GrantsActionClass);
-		GrantedActions.Add(GrantedAction);
-	}
+	GrantActions(EquipperActionComponent);
 
 	OnItemEquipped.Broadcast(this, Equipper, InEquippedSlot);
 }

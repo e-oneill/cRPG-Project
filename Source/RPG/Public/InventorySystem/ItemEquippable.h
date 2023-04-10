@@ -11,6 +11,7 @@ class UInventoryComponent;
 class UAction;
 struct FEquippedSlot;
 struct FEquippedSlot;
+class UGameplayActionComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnItemEquip, UItemEquippable*, EquippedItem, UInventoryComponent*, EquippingInventory, const FEquippedSlot&, EquippedSlot);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemUnequip, UItemEquippable*, UnequippedItem);
@@ -46,6 +47,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName AttachSocket = FName("hand_rSocket");
 
+	virtual void GrantActions(UGameplayActionComponent* EquipperActionComponent);
+
 public:
 	EEquipmentSlot GetValidSlot() const { return ValidSlot; }
 	void SetValidSlot(EEquipmentSlot val) { ValidSlot = val; }
@@ -69,9 +72,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnItemUnequip OnItemUnequipped;
-
-	
-	
 
 	void InitializeItem(const FInventoryItemData& ItemData) override;
 

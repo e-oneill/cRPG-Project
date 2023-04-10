@@ -23,5 +23,8 @@ public:
 	static UItemBase* AddItemToInventoryFromData(FDataTableRowHandle ItemDataHandle, UInventoryComponent* InventoryToAddTo);
 	UFUNCTION(BlueprintCallable)
 	static UItemBase* CreateItemFromData(const FInventoryItemData& ItemData);
+
+private:
+	static UItemBase* GetCorrectClassOfEquippableItem(const FInventoryItemData& ItemData);
 	
 };

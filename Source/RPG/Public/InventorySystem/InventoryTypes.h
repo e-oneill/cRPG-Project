@@ -7,6 +7,7 @@
 class UItemEquippable;
 class UItemBase;
 class UAction;
+class UWeaponAction;
 
 UENUM(BlueprintType, Blueprintable)
 enum class EItemType : uint8
@@ -14,6 +15,14 @@ enum class EItemType : uint8
 	Basic,
 	Equippable,
 	Consumable
+};
+
+UENUM(BlueprintType, Blueprintable)
+enum class EEquippableType : uint8
+{
+	Weapon,
+	Armour,
+	Trinket
 };
 
 UENUM(BlueprintType, Blueprintable)
@@ -78,9 +87,17 @@ struct FInventoryItemData : public FTableRowBase
 	#pragma endregion Base Item
 
 	#pragma region Equippable Item
+	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "ItemType == EItemType == EItemType::Equippable", EditConditionHides))
+		EEquippableType EquippableType;
+
 	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "ItemType == EItemType::Equippable", EditConditionHides))
 	EEquipmentSlot ValidSlot;
-	
+
+	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "EquippableType == EEquippableType::Weapon", EditConditionHides))
+	float DamageRating;
+	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "EquippableType == EEquippableType::Weapon", EditConditionHides))
+	TArray<TSoftClassPtr<UWeaponAction>> WeaponActions;
+
 	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "ItemType == EItemType::Equippable", EditConditionHides))
 	TSoftObjectPtr<UStaticMesh> StaticMesh;
 

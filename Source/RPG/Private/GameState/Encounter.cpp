@@ -164,6 +164,11 @@ void AEncounter::RemoveCharacterFromEncounter(UGameplayActionComponent* InAction
 	{
 		UTurn* TurnToRemove = Turns[Index];
 		Turns.RemoveAt(Index);
+		if (Index <= CurrentTurnIndex)
+		{
+			CurrentTurnIndex--;
+		}
+		
 		TurnToRemove->Destroy();
 	}
 
