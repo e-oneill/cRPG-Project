@@ -1,0 +1,11 @@
+﻿Asset Name,Asset Type,Asset Use,Priority,Effort
+Shortsword 1,Mesh,Equippable Weapon,M,M
+Shortsword 1 Skin 1,Texture,Basic skin for shortsword,M,S
+Shortsword 1 Skin 2,Texture,Skin for variant of shortsword,M,S
+Shortsword 1 Skin 3,Texture,Skin for variant of shortsword,M,S
+Shortsword Attack Animation 1,Animation,Animation for Weapon Action,M,M
+Shortsword Attack Animation 2,Animation,Animation for Weapon Action,M,M
+Shortsword Attack Animation 3,Animation,Animation for Weapon Action,M,M
+Shortsword Attack Animation 4,Animation,Animation for Special Action,M,M
+Shortsword Attack Animation 5,Animation,Animation for Special Action,M,M
+Shortsword Attack Animation 6,Animation,Animation for Special Action,M,M
