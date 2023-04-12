@@ -168,7 +168,6 @@ void UMainHUD::HandleSelectedActorChange(AActor* InSelectedActor)
 			InventoryComponent->OnItemAdded.AddUniqueDynamic(this, &UMainHUD::OnItemAdded);
 			InventoryComponent->OnItemRemoved.AddUniqueDynamic(this, &UMainHUD::OnItemRemoved);
 		}
-
 	}
 	else
 	{
