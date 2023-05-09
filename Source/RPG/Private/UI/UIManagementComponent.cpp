@@ -127,11 +127,6 @@ void UUIManagementComponent::OpenInventory(UInventoryComponent* InventoryToOpen 
 
 	//if the in game menu is already open, switch tab to inventory
 
-	
-
-	
-
-
 }
 
 void UUIManagementComponent::ChangeSelectedActor(AActor* Actor)
