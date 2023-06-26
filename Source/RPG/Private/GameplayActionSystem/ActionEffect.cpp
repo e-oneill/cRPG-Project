@@ -58,6 +58,7 @@ void UActionEffect::InitializeEffect(FEffectConfigurationData ConfigData, UGamep
 
 	//get the gameplay tag for the attribute this effect targets
 	TargetAttribute = ConfigData.Attribute;
+	DamageType = ConfigData.DamageType;
 
 	//get the magnitude type so we can set the float variables
 	MagnitudeType = ConfigData.EffectType;
@@ -238,7 +239,6 @@ void UActionEffect::UnbindFromTurnEvents(UTurn* Turn)
 void UActionEffect::ApplyEffect_Implementation()
 {
 	
-
 	UActionAttribute* Attribute = EffectTarget->GetAttributeByTag(TargetAttribute);
 	if (!Attribute)
 	{
@@ -246,22 +246,25 @@ void UActionEffect::ApplyEffect_Implementation()
 		return;
 	}
 
-	float CurrentValue = Attribute->GetAttributeValue();
+	float CurrentValue = 0;
 	//if this is a fixed one modify the value by the magnitude
 	if (MagnitudeType == EActionEffectMagnitudeType::Fixed)
 	{
 		
-		CurrentValue -= EffectMagnitude;
+		CurrentValue = EffectMagnitude;
 		
 	}
 	else if (MagnitudeType == EActionEffectMagnitudeType::RandomRange)
 	{
 		float RandomDamage = ARPGGameState::GetRandomFloatInRange(EffectMinMagnitude, EffectMaxMagnitude);
 		RandomDamage = FMath::RoundToInt32(RandomDamage);
-		CurrentValue -= RandomDamage;
+		CurrentValue = RandomDamage;
 		
 	}
-	Attribute->SetAttributeValue(CurrentValue);
+	//Attribute->SetAttributeValue(CurrentValue);
+	Attribute->ChangeAttributeValue(CurrentValue, this);
+	
+
 	//if this effect is instant, destroy itself
 	if (ExecutionType == EActionEffectExecutionType::Instant)
 	{

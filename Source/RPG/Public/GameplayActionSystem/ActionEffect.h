@@ -32,8 +32,10 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-
 	void BeginDestroy() override;
+
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetDamageType() const { return DamageType; };
 
 protected:
 	void PrepareToDestroy();
@@ -93,6 +95,8 @@ protected:
 	FVector TargetLocation;
 
 	FGameplayTag TargetAttribute;
+
+	FGameplayTag DamageType;
 
 	//stores whether this effect should impact the target or the source
 	EActionEffectTarget Target;

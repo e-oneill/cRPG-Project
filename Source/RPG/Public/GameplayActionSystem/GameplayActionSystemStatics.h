@@ -107,6 +107,9 @@ class UFXSystemAsset;
 	UPROPERTY(EditDefaultsOnly, Category = "Target", meta = (Categories = "Attribute."))
 	FGameplayTag Attribute;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Target", meta = (Categories = "Damage."))
+	FGameplayTag DamageType;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Target")
 	EActionEffectTarget Target;
 
