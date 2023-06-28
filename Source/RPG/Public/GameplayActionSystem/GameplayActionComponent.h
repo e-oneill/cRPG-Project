@@ -83,7 +83,7 @@ protected:
 
 	#pragma region AttributesVariables
 	//this is used to define an attribute configuration for the character - perhaps i could make this something you can configure in data and simply select a row?
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Gameplay Action System")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = "Gameplay Action System", meta = (TitleProperty="{AttributeName} - {DefaultValue}"))
 		TArray<FAttributeConfig> AttributeSet;
 
 	UPROPERTY(Replicated, VisibleInstanceOnly, BlueprintReadOnly, Category = "Gameplay Action System")

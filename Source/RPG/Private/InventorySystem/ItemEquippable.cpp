@@ -49,6 +49,25 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 
 	GrantActions(EquipperActionComponent);
 
+	for (const FEquipmentAttribute& AttributeBonus : AttributeBonuses)
+	{
+		UActionAttribute* Attribute = EquipperActionComponent->GetAttributeByTag(AttributeBonus.Attribute);
+		if (!Attribute)
+		{
+			continue;
+		}
+
+		float RealBonus = AttributeBonus.Bonus;
+
+		if (AttributeBonus.BonusType == EBonusType::PERCENTAGE)
+		{
+			RealBonus = Attribute->GetAttributeBaseValue() * RealBonus;
+		}
+		
+		Attribute->SetAttributeBaseValue(Attribute->GetAttributeBaseValue() + RealBonus);
+		Attribute->SetAttributeValue(Attribute->GetAttributeValue() + RealBonus);
+	}
+
 	OnItemEquipped.Broadcast(this, Equipper, InEquippedSlot);
 }
  
@@ -77,6 +96,30 @@ void UItemEquippable::OnUnequip_Implementation()
 		EquipperActionComponent->RemoveAction(GrantedActions[i]);
 	}
 
+	for (const FEquipmentAttribute& AttributeBonus : AttributeBonuses)
+	{
+		UActionAttribute* Attribute = EquipperActionComponent->GetAttributeByTag(AttributeBonus.Attribute);
+		if (!Attribute)
+		{
+			continue;
+		}
+
+		float RealBonus = AttributeBonus.Bonus;
+
+		if (AttributeBonus.BonusType == EBonusType::PERCENTAGE)
+		{
+			RealBonus = Attribute->GetAttributeBaseValue() * RealBonus;
+		}
+
+		Attribute->SetAttributeBaseValue(Attribute->GetAttributeBaseValue() - RealBonus);
+		if (Attribute->GetAttributeValue() > Attribute->GetAttributeBaseValue())
+		{
+			Attribute->SetAttributeValue(Attribute->GetAttributeBaseValue());
+		}
+		
+	}
+
+
 	OnItemUnequipped.Broadcast(this);
 }
 
@@ -97,6 +140,8 @@ void UItemEquippable::InitializeItem(const FInventoryItemData& ItemData)
 	ValidSlot = ItemData.ValidSlot;
 	ItemStaticMesh = ItemData.StaticMesh.LoadSynchronous();
 	AttachSocket = ItemData.AttachSocket;
+	AttributeBonuses = ItemData.AttributeBonuses;
+
 
 	for (TSoftClassPtr<UAction> ItemClass : ItemData.GrantsActions)
 	{

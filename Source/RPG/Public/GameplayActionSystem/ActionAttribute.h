@@ -8,6 +8,7 @@
 #include "ActionAttribute.generated.h"
 
 class UGameplayActionComponent;
+class UActionEffect;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttributeChangeSignature, UGameplayActionComponent*, OwningComponent, UActionAttribute*, Attribute);
 
@@ -30,6 +31,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	UGameplayActionComponent* ActionComponent;
 
+	void HandleStandardChange(float val, UActionEffect* SourceEffect);
+
+	void HandleHealthChange(float val, UActionEffect* SourceEffect);
+
 	UFUNCTION()
 	void OnRep_AttributeValue();
 
@@ -44,6 +49,9 @@ public:
 	FAttributeChangeSignature OnAttributeChanged;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION()
+	void ChangeAttributeValue(float val, UActionEffect* SourceEffect);
 
 	
 

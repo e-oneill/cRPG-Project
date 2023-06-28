@@ -3,6 +3,7 @@
 
 #include "GameplayActionSystem/ActionAttribute.h"
 #include "Net/UnrealNetwork.h"
+#include "GameplayActionSystem/ActionEffect.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
 #include "ActionSystemTags.h"
 #include "RPGGameStatics.h"
@@ -43,18 +44,86 @@ void UActionAttribute::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 }
 
-void UActionAttribute::SetAttributeValue(float val)
+void UActionAttribute::ChangeAttributeValue(float val, UActionEffect* SourceEffect)
 {
-	AttributeValue = FMath::Clamp(val, 0.f, AttributeBaseValue); 
-	
-	OnAttributeChanged.Broadcast(ActionComponent, this);
+	if (AttributeTag == FActionSystemTags::Get().Attr_Health)
+	{
+		HandleHealthChange(val, SourceEffect);
+	}
+	else
+	{
+		HandleStandardChange(val, SourceEffect);
+		
+	}
+	//OnAttributeChanged.Broadcast(ActionComponent, this);
+}
 
-	if (AttributeTag == FActionSystemTags::Get().Attr_Health && AttributeValue <= 0)
+void UActionAttribute::HandleStandardChange(float val, UActionEffect* SourceEffect)
+{
+	float NewAttributeValue = AttributeValue - val;
+
+	AttributeValue = FMath::Clamp(NewAttributeValue, 0.f, AttributeBaseValue);
+	OnAttributeChanged.Broadcast(ActionComponent, this);
+}
+
+void UActionAttribute::HandleHealthChange(float val, UActionEffect* SourceEffect)
+{
+	if (!ActionComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tried to do health damage to an actor with no action component!"));
+		return;
+	}
+
+	UActionAttribute* PhysicalArmour = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_PhysicalArmour);
+	UActionAttribute* MagicalArmour = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_MagicalArmour);
+	FGameplayTag SourceDamageType = SourceEffect->GetDamageType();
+
+	if (val > 0 && PhysicalArmour && SourceDamageType.MatchesTag(FActionSystemTags::Get().Dmg_Physical))
+	{
+		if (PhysicalArmour->GetAttributeValue() < val)
+		{
+			float ArmourValue = PhysicalArmour->GetAttributeValue();
+			PhysicalArmour->ChangeAttributeValue(val, SourceEffect);
+			val -= ArmourValue;
+		}
+		else
+		{
+			PhysicalArmour->ChangeAttributeValue(val, SourceEffect);
+			return;
+		}
+
+	}
+	else if (val > 0 && MagicalArmour && SourceDamageType.MatchesTag(FActionSystemTags::Get().Dmg_Magical))
+	{
+		if (MagicalArmour->GetAttributeValue() < val)
+		{
+			float ArmourValue = MagicalArmour->GetAttributeValue();
+			MagicalArmour->ChangeAttributeValue(val, SourceEffect);
+			val -= ArmourValue;
+		}
+		else
+		{
+			MagicalArmour->ChangeAttributeValue(val, SourceEffect);
+			return;
+		}
+	}
+
+	HandleStandardChange(val, SourceEffect);
+
+	if (AttributeValue <= 0)
 	{
 		//if the attribute is Health, we should run low health logic at zero hp
 		HandleDeath();
 	}
 }
+
+void UActionAttribute::SetAttributeValue(float val)
+{
+	AttributeValue = FMath::Clamp(val, 0.f, AttributeBaseValue);
+	OnAttributeChanged.Broadcast(ActionComponent, this);
+}
+
+
 
 void UActionAttribute::HandleDeath()
 {
