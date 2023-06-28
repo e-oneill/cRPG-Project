@@ -12,6 +12,7 @@ class UAction;
 struct FEquippedSlot;
 struct FEquippedSlot;
 class UGameplayActionComponent;
+struct FEquipmentAttribute;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnItemEquip, UItemEquippable*, EquippedItem, UInventoryComponent*, EquippingInventory, const FEquippedSlot&, EquippedSlot);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemUnequip, UItemEquippable*, UnequippedItem);
@@ -72,6 +73,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnItemUnequip OnItemUnequipped;
+
+	UPROPERTY(EditDefaultsOnly, meta = (TitleProperty="{Attribute} - {BonusType} - {Bonus}"))
+	TArray<FEquipmentAttribute> AttributeBonuses;
 
 	void InitializeItem(const FInventoryItemData& ItemData) override;
 

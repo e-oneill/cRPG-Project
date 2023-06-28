@@ -2,6 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "GameplayTagContainer.h"
+#include "IDetailCustomization.h"
+#include "IDetailPropertyRow.h"
+#include "DetailLayoutBuilder.h"
 #include "InventoryTypes.generated.h"
 
 class UItemEquippable;
@@ -59,6 +63,32 @@ public:
 		FDataTableRowHandle PreEquippedItem;*/
 };
 
+UENUM(BlueprintType, Blueprintable)
+enum class EBonusType : uint8
+{
+	FIXED,
+	PERCENTAGE
+};
+
+USTRUCT(BlueprintType)
+struct FEquipmentAttribute
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "Attribute."))
+	FGameplayTag Attribute;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EBonusType BonusType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Bonus;
+
+
+
+};
+
 
 USTRUCT(BlueprintType)
 struct FInventoryItemData : public FTableRowBase
@@ -106,6 +136,9 @@ struct FInventoryItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Equippable Item", meta = (EditCondition = "ItemType == EItemType::Equippable", EditConditionHides))
 	TArray<TSoftClassPtr<UAction>> GrantsActions;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Equippable Item", meta = (TitleProperty = "{Attribute} - {BonusType} - {Bonus}", EditCondition = "ItemType == EItemType::Equippable", EditConditionHides))
+		TArray<FEquipmentAttribute> AttributeBonuses;
 	#pragma endregion Equippable Item
 	
 	#pragma region Consumable Item
@@ -131,4 +164,6 @@ public:
 	//should this item be equipped on BeginPlay
 	UPROPERTY(EditDefaultsOnly)
 		bool bAutoEquip;
+
+	
 };

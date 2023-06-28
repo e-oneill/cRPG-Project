@@ -27,7 +27,13 @@ protected:
 	void UpdateHealthValues(UActionAttribute* HealthAttribute);
 
 	UFUNCTION(BlueprintNativeEvent)
-		void OnHealthChanged(UGameplayActionComponent* InActionComponent, UActionAttribute* InHealthAttr);
+		void OnHealthChanged(UGameplayActionComponent* InActionComponent, UActionAttribute* InAttr);
+
+	UFUNCTION(BlueprintNativeEvent)
+		void OnPhysicalArmourChanged(UGameplayActionComponent* InActionComponent, UActionAttribute* InAttr);
+
+	UFUNCTION(BlueprintNativeEvent)
+		void OnMagicalArmourChanged(UGameplayActionComponent* InActionComponent, UActionAttribute* InAttr);
 	
 	UPROPERTY(BlueprintReadOnly)
 	UGameplayActionComponent* ActionComponent;
@@ -35,11 +41,17 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget = "true"))
 	UProgressBar* HealthBar;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentHealth;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 MaxHealth;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentPhysicalArmour;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaxPhysicalArmour;
 
 
 };

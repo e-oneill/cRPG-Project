@@ -9,12 +9,19 @@
 
 void UItemConsumable::UseConsumable_Implementation(AActor* TargetActor, FVector TargetLocation /*= FVector::ZeroVector*/)
 {
+	UGameplayActionComponent* TargetActionComponent = Cast<UGameplayActionComponent>(TargetActor->GetComponentByClass(UGameplayActionComponent::StaticClass()));
 	if (!ConsumableAction)
 	{
-		ConsumableAction = NewObject<UAction>(this, ConsumableActionType);
+		if (TargetActionComponent)
+		{
+			ConsumableAction = NewObject<UAction>(TargetActionComponent, ConsumableActionType);
+		}
+		else
+		{
+			ConsumableAction = NewObject<UAction>(this, ConsumableActionType);
+		}
 	}
-	
-	UGameplayActionComponent* TargetActionComponent = Cast<UGameplayActionComponent>(TargetActor->GetComponentByClass(UGameplayActionComponent::StaticClass()));
+
 	if (TargetActionComponent && ConsumableAction)
 	{
 		ConsumableAction->InitializeAction(TargetActionComponent);

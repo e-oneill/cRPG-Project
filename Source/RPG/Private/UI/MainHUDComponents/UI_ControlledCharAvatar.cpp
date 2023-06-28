@@ -24,14 +24,33 @@ void UUI_ControlledCharAvatar::Init(UGameplayActionComponent* InActionComponent)
 {
 	ActionComponent = InActionComponent;
 	UActionAttribute* HealthAttribute = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_Health);
+	UActionAttribute* PhysicalArmour = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_PhysicalArmour);
+	UActionAttribute* MagicalArmour = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_MagicalArmour);
 	if (!HealthAttribute)
 	{
 		return;
 	}
 
-	HealthAttribute->OnAttributeChanged.AddUniqueDynamic(this, &UUI_ControlledCharAvatar::OnHealthChanged);
+	if (HealthAttribute)
+	{
+		HealthAttribute->OnAttributeChanged.AddUniqueDynamic(this, &UUI_ControlledCharAvatar::OnHealthChanged);
+		OnHealthChanged(ActionComponent, HealthAttribute);
+	}
+
+	if (PhysicalArmour)
+	{
+		PhysicalArmour->OnAttributeChanged.AddUniqueDynamic(this, &UUI_ControlledCharAvatar::OnPhysicalArmourChanged);
+		OnPhysicalArmourChanged(ActionComponent, PhysicalArmour);
+	}
+
+	if (MagicalArmour)
+	{
+		MagicalArmour->OnAttributeChanged.AddUniqueDynamic(this, &UUI_ControlledCharAvatar::OnMagicalArmourChanged);
+		OnMagicalArmourChanged(ActionComponent, MagicalArmour);
+	}
 	
-	UpdateHealthValues(HealthAttribute);
+	
+	//UpdateHealthValues(HealthAttribute);
 
 }
 
@@ -44,5 +63,19 @@ void UUI_ControlledCharAvatar::UpdateHealthValues(UActionAttribute* HealthAttrib
 
 void UUI_ControlledCharAvatar::OnHealthChanged_Implementation(UGameplayActionComponent* InActionComponent, UActionAttribute* InHealthAttr)
 {
-	UpdateHealthValues(InHealthAttr);
+	//UpdateHealthValues(InHealthAttr);
+	CurrentHealth = InHealthAttr->GetAttributeValue();
+	MaxHealth = InHealthAttr->GetAttributeBaseValue();
+	HealthBar->SetPercent((float)CurrentHealth / MaxHealth);
+}
+
+void UUI_ControlledCharAvatar::OnPhysicalArmourChanged_Implementation(UGameplayActionComponent* InActionComponent, UActionAttribute* InAttr)
+{
+	CurrentPhysicalArmour = InAttr->GetAttributeValue();
+	MaxPhysicalArmour = InAttr->GetAttributeBaseValue();
+}
+
+void UUI_ControlledCharAvatar::OnMagicalArmourChanged_Implementation(UGameplayActionComponent* InActionComponent, UActionAttribute* InAttr)
+{
+
 }
