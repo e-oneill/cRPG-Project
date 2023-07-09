@@ -1421,6 +1421,17 @@
       "url": "https://json.schemastore.org/dotnetcli.host.json"
     },
     {
+      "name": "dprint.json",
+      "description": "dprint configuration file",
+      "fileMatch": [
+        "dprint.json",
+        "dprint.jsonc",
+        ".dprint.json",
+        ".dprint.jsonc"
+      ],
+      "url": "https://dprint.dev/schemas/v0.json"
+    },
+    {
       "name": "drone.json",
       "description": "Drone CI configuration file",
       "fileMatch": [".drone.yml"],
@@ -2094,8 +2105,9 @@
       "name": "JReleaser",
       "description": "JSON schema for JReleaser config file",
       "fileMatch": ["jreleaser.yml", "jreleaser.json"],
-      "url": "https://json.schemastore.org/jreleaser-1.6.0.json",
+      "url": "https://json.schemastore.org/jreleaser-1.7.0.json",
       "versions": {
+        "1.7.0": "https://json.schemastore.org/jreleaser-1.7.0.json",
         "1.6.0": "https://json.schemastore.org/jreleaser-1.6.0.json"
       }
     },
@@ -2471,6 +2483,12 @@
       "description": "Configuration file defining an mcmeta file for a texture for a resource pack for Minecraft.",
       "fileMatch": ["**/assets/*/textures/**/*.png.mcmeta"],
       "url": "https://json.schemastore.org/minecraft-texture-mcmeta.json"
+    },
+    {
+      "name": "Minecraft Data Pack Trim Material",
+      "description": "Configuration file defining a trim material for a data pack for Minecraft.",
+      "fileMatch": ["**/data/*/trim_material/*.json"],
+      "url": "https://json.schemastore.org/minecraft-trim-material.json"
     },
     {
       "name": "MkDocs Configuration 1.0",
@@ -3352,6 +3370,19 @@
       "url": "https://json.schemastore.org/sil-kit-participant-configuration.json"
     },
     {
+      "name": "SIL Kit Registry Configuration",
+      "description": "Configuration file for Vector SIL Kit Registry Service",
+      "fileMatch": [
+        "silkit-registry.yaml",
+        "silkit-registry.yml",
+        "silkit-registry.json",
+        "*.silkit-registry.yaml",
+        "*.silkit-registry.yml",
+        "*.silkit-registry.json"
+      ],
+      "url": "https://json.schemastore.org/sil-kit-registry-configuration.json"
+    },
+    {
       "name": "size-limit configuration",
       "description": "Configuration file for size-limit",
       "fileMatch": [".size-limit.json"],
@@ -3726,6 +3757,7 @@
       "url": "https://json.schemastore.org/utam-page-object.json",
       "versions": {
         "1.5.0": "https://json.schemastore.org/utam-page-object-1.5.0.json",
+        "2.0.3": "https://json.schemastore.org/utam-page-object-2.0.3.json",
         "current": "https://json.schemastore.org/utam-page-object.json"
       }
     },
@@ -4154,6 +4186,12 @@
       "description": "Helmfile is a declarative spec for deploying helm charts",
       "fileMatch": ["helmfile.yaml", "**/helmfile.d/**/*.yaml"],
       "url": "https://json.schemastore.org/helmfile.json"
+    },
+    {
+      "name": "helmwave",
+      "description": "Helmwave is a declarative spec for deploying helm charts",
+      "fileMatch": ["helmwave.yml"],
+      "url": "https://github.com/helmwave/helmwave/releases/latest/download/schema.json"
     },
     {
       "name": "Container Structure Test",
