@@ -26,7 +26,6 @@ protected:
 	TSubclassOf<UAction> ConsumableActionType;
 
 
-
 	UPROPERTY(BlueprintReadOnly)
 	UAction* ConsumableAction;
 

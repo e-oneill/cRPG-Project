@@ -2,6 +2,7 @@
 
 
 #include "InteractableActor.h"
+#include "GameplayActionSystem/GameplayActionComponent.h"
 
 // Sets default values
 AInteractableActor::AInteractableActor()
@@ -27,11 +28,54 @@ void AInteractableActor::Tick(float DeltaTime)
 
 bool AInteractableActor::CanInteract_Implementation(AActor* Interactor)
 {
-	return FVector::Dist(Interactor->GetActorLocation(), GetActorLocation()) <= InteractionDistance;
+	bool bInRange = FVector::Dist(Interactor->GetActorLocation(), GetActorLocation()) <= InteractionDistance;
+
+	UGameplayActionComponent* ActionComponent = Cast<UGameplayActionComponent>(Interactor->GetComponentByClass(UGameplayActionComponent::StaticClass()));
+
+	if (!ActionComponent && AttributeRequirements.Num() > 0)
+	{
+		return false;
+	}
+
+	bool bHasAttribute = true;
+	for (FInteractableAttributeRequirement& Requirement : AttributeRequirements)
+	{
+		if (Requirement.bPayCostOnlyFirstTime && bInteracted)
+		{
+			continue;
+		}
+
+		UActionAttribute* Attribute = ActionComponent->GetAttributeByTag(Requirement.Attribute);
+		if (!Attribute || Attribute->GetAttributeValue() < Requirement.ValueRequired)
+		{
+			bHasAttribute = false;
+			break;
+		}
+	}
+
+	return bInRange && bHasAttribute;
 }
 
 bool AInteractableActor::Interact_Implementation(AActor* Interactor)
 {
+	UGameplayActionComponent* ActionComponent = Cast<UGameplayActionComponent>(Interactor->GetComponentByClass(UGameplayActionComponent::StaticClass()));
+	for (FInteractableAttributeRequirement& Requirement : AttributeRequirements)
+	{
+		if (Requirement.bDeductAsCost == false || (Requirement.bPayCostOnlyFirstTime && bInteracted))
+		{
+			continue;
+		}
+
+		UActionAttribute* Attribute = ActionComponent->GetAttributeByTag(Requirement.Attribute);
+		if (Attribute)
+		{
+			Attribute->ChangeAttributeValue(Requirement.ValueRequired, nullptr);
+		}
+
+	}
+
+	bInteracted = true;
+
 	return IInteractable::Execute_CanInteract(this, Interactor);
 }
 
