@@ -8,6 +8,7 @@
 
 class UBoxComponent;
 class UDecalComponent;
+class ITriggerable;
 
 UCLASS()
 class RPG_API AEnvironmentalTriggerActor : public AActor
@@ -18,6 +19,10 @@ public:
 	// Sets default values for this actor's properties
 	AEnvironmentalTriggerActor();
 
+	//virtual void PostLoad() override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -25,6 +30,23 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Environmental Trigger")
 	bool bIsVisible;
 
+	UPROPERTY(EditAnywhere, Category = "Environmental Trigger")
+	bool bShowDecal = true;
+
+	UPROPERTY(EditAnywhere, Category = "Environmental Trigger")
+	bool bAutoRetrigger = false;
+
+	//Will cause the trigger to keep looping, if false will just retrigger once
+	UPROPERTY(EditAnywhere, Category = "Environmental Trigger")
+	bool bLooping = false;
+
+	UPROPERTY(EditAnywhere, Category = "Environmental Trigger", meta = (EditCondition = "bAutoRetrigger"))
+	bool bStartDelayAfterOverlapEnd = false;
+
+	UPROPERTY(EditAnywhere, Category = "Environmental Trigger", meta = (EditCondition = "bAutoRetrigger"))
+	float RetriggerDelay;
+
+	FTimerHandle RetriggerTimer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Environmental Trigger")
 	UBoxComponent* TriggerCollider;
@@ -35,6 +57,21 @@ protected:
 	UFUNCTION()
 	void OnColliderOverlap(UPrimitiveComponent* Overlapped, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnColliderOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Environmental Trigger")
+	//TScriptInterface<ITriggerable> Triggers;
+
+	AActor* Triggers;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Environmental Trigger")
+	bool bAllowParallelTriggers;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Environmental Trigger")
+	bool bTriggered = false;
+
+	UFUNCTION()
+	bool ValidateTriggers();
 
 public:	
 	// Called every frame
@@ -48,5 +85,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Environmental Trigger")
 	void TriggerActor(UGameplayActionComponent* TriggeringActor);
+
+	UFUNCTION()
+	void SetTriggerTimer(UGameplayActionComponent* TriggeringActor, bool bClearExisting = true);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnVisibilityChanged(bool NewVisibility);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnTriggered(UGameplayActionComponent* TriggeringActor);
+
+	
 
 };
