@@ -8,6 +8,7 @@
 #include "GameplayActionSystem/ActionAttribute.h"
 #include "GameState/Turn.h"
 #include "GameFramework/RPGGameState.h"
+#include "Components/SphereComponent.h"
 
 UActionEffect* UActionEffect::CreateActionEffect(FEffectConfigurationData ConfigData, UGameplayActionComponent* InSource /*= nullptr*/, UGameplayActionComponent* InTarget /*= nullptr*/, FVector InTargetLocation /*= FVector::ZeroVector*/)
 {
@@ -33,26 +34,7 @@ void UActionEffect::InitializeEffect(FEffectConfigurationData ConfigData, UGamep
 {
 	//EffectConfiguration = ConfigData;
 	EffectSource = InSource;
-	//set the target or target location, if relevant
-	switch (ConfigData.Target)
-	{
-	case EActionEffectTarget::Self:
-		EffectTarget = InSource;
-		break;
-	case EActionEffectTarget::Target:
-		EffectTarget = InTarget;
-		break;
-	case EActionEffectTarget::AreaSelf:
-		TargetLocation = InSource->GetOwner()->GetActorLocation();
-		break;
-	case EActionEffectTarget::AreaTarget:
-		TargetLocation = InTarget->GetOwner()->GetActorLocation();
-		break;
-	default:
-		break;
-	}
-
-	EffectTarget->AddActiveEffect(this);
+	EffectTarget = InTarget;
 
 	ExecutionType = ConfigData.Execution;
 
@@ -104,6 +86,13 @@ void UActionEffect::InitializeEffect(FEffectConfigurationData ConfigData, UGamep
 	{
 		AppliedStatus = ConfigData.Status;
 	}
+
+	EffectTarget->AddActiveEffect(this);
+	
+		//singular target
+		
+	
+
 }
 
 void UActionEffect::TriggerEffect()

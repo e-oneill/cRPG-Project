@@ -8,6 +8,7 @@
 #include "ActionEffect.generated.h"
 
 class UGameplayActionComponent;
+class UShapeComponent;
 
 
 
