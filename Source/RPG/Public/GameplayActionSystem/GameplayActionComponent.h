@@ -95,6 +95,11 @@ protected:
 
 
 public:	
+	static UGameplayActionComponent* GetActionComponent(AActor* Actor)
+	{
+		return (Actor) ? Cast<UGameplayActionComponent>(Actor->GetComponentByClass(UGameplayActionComponent::StaticClass())) : nullptr;
+	}
+
 	void AddActiveEffect(UActionEffect* InEffect) {ActiveEffects.Add(InEffect); }
 	void RemoveActiveEffect(UActionEffect* InEffect) { ActiveEffects.Remove(InEffect); }
 
