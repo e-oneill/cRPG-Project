@@ -10,7 +10,11 @@
 #include "../RPG.h"
 #include "GameplayActionSystem/ActionPlayerControlInterface.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/SphereComponent.h"
+#include "Components/ShapeComponent.h"
 
+extern TAutoConsoleVariable<bool> CVarDebugActionSystem;
+extern TAutoConsoleVariable<bool> CVarDebugAll;
 void UAction::InitializeAction_Implementation(UGameplayActionComponent* InSource)
 {
 	State = EActionState::Idle;
@@ -116,11 +120,72 @@ void UAction::ExecuteAction_Implementation(FVector TargetLocation /*= FVector::Z
 	UGameplayActionComponent* TargetComponent = UGameplayActionComponent::GetComponentFromActor(TargetActor);
 	for (FEffectConfigurationData& ConfigData : ActionEffects)
 	{
-		if (TargetComponent || ConfigData.Target == EActionEffectTarget::Self || ConfigData.Target == EActionEffectTarget::AreaTarget || ConfigData.Target == EActionEffectTarget::AreaSelf)
+		//find all targets and create effects on each
+		TArray<UGameplayActionComponent*> ActionComponents;
+
+		switch (ConfigData.Target)
 		{
-			UActionEffect* NewEffect = UActionEffect::CreateActionEffect(ConfigData, Source, TargetComponent, TargetLocation);
+		case EActionEffectTarget::Self:
+			ActionComponents.Add(Source);
+			TargetLocation = Source->GetOwner()->GetActorLocation();
+			break;
+		case EActionEffectTarget::Target:
+			ActionComponents.Add(TargetComponent);
+			TargetLocation = TargetComponent->GetOwner()->GetActorLocation();
+			break;
+		case EActionEffectTarget::AreaSelf:
+			TargetLocation = Source->GetOwner()->GetActorLocation();
+			//bTargetIsLocation = true;
+			break;
+		case EActionEffectTarget::AreaTarget:
+			TargetLocation = TargetComponent->GetOwner()->GetActorLocation();
+			//bTargetIsLocation = true;
+			break;
+		default:
+			break;
+		}
+
+		if (ConfigData.Target == EActionEffectTarget::AreaSelf || ConfigData.Target == EActionEffectTarget::AreaTarget)
+		{
+			AActor* SourceActor = Source->GetOwner();
+			//TArray<AActor*> OverlappedActors;
+			TArray<FOverlapResult> OverlapResults;
+
+			UWorld* World = Source->GetWorld();
+			World->OverlapMultiByObjectType(
+					OverlapResults,
+					TargetLocation,
+					FQuat::Identity,
+					FCollisionObjectQueryParams::AllObjects,
+					FCollisionShape::MakeSphere(ConfigData.AreaOfEffect)
+				);
+
+			if (CVarDebugAll->GetBool() || CVarDebugActionSystem->GetBool())
+				DrawDebugSphere(Source->GetOwner()->GetWorld(), TargetLocation, ConfigData.AreaOfEffect, 32, FColor::White, false, 10, 0U, 2.f);
+			
+			TArray<UGameplayActionComponent*> GameplayComponents;
+			for (FOverlapResult OverlapResult : OverlapResults)
+			{
+				AActor* HitActor = OverlapResult.GetActor();
+				if (!HitActor)
+				{
+					continue;
+				}
+				UGameplayActionComponent* GameplayComponent = UGameplayActionComponent::GetActionComponent(HitActor);
+				if (GameplayComponent)
+				{
+					ActionComponents.AddUnique(GameplayComponent);
+				}
+			}
+		}
+
+		for (UGameplayActionComponent* GameplayComponent : ActionComponents)
+		{
+			UActionEffect* NewEffect = UActionEffect::CreateActionEffect(ConfigData, Source, GameplayComponent, TargetLocation);
 			NewEffect->TriggerEffect();
 		}
+
+		
 		
 	}
 	//play all the relevant action cues

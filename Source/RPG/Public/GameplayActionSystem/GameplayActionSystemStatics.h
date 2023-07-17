@@ -219,6 +219,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio || Type == ECueType::Particle", EditConditionHides))
 	bool bLoop = false;
 
+	/*UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Audio || Type == ECueType::Particle && !bLoop", EditConditionHides))
+	float Duration;*/
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (EditCondition = "Type == ECueType::Particle", EditConditionHides))
 	UFXSystemAsset* ParticleSystem;
 

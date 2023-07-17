@@ -60,6 +60,7 @@ void AEnvironmentalTriggerActor::BeginPlay()
 	if (!bIsVisible)
 	{
 		SpottedDecal->SetVisibility(false, true);
+		OnVisibilityChanged(bIsVisible);
 	}
 
 }
@@ -69,8 +70,11 @@ void AEnvironmentalTriggerActor::OnColliderOverlap(UPrimitiveComponent* Overlapp
 	UGameplayActionComponent* ActionComp = Cast<UGameplayActionComponent>(OtherActor->GetComponentByClass(UGameplayActionComponent::StaticClass()));
 	if (ActionComp && (bAllowParallelTriggers || !bTriggered))
 	{
-		bTriggered = true;
-		TriggerActor(ActionComp);
+		if (!IgnoreFaction.HasTag(ActionComp->GetFaction()))
+		{
+			bTriggered = true;
+			TriggerActor(ActionComp);
+		}
 	}
 }
 
@@ -152,7 +156,7 @@ void AEnvironmentalTriggerActor::TriggerActor(UGameplayActionComponent* Triggeri
 		return;
 	}
 
-	ITriggerable::Execute_TryTrigger(Triggers, this);
+	ITriggerable::Execute_TryTrigger(Triggers, TriggeringActor->GetOwner());
 	
 	if ((bTriggered || bLooping) && bAutoRetrigger && !bStartDelayAfterOverlapEnd)
 	{
