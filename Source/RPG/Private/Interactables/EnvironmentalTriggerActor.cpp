@@ -70,8 +70,11 @@ void AEnvironmentalTriggerActor::OnColliderOverlap(UPrimitiveComponent* Overlapp
 	UGameplayActionComponent* ActionComp = Cast<UGameplayActionComponent>(OtherActor->GetComponentByClass(UGameplayActionComponent::StaticClass()));
 	if (ActionComp && (bAllowParallelTriggers || !bTriggered))
 	{
-		bTriggered = true;
-		TriggerActor(ActionComp);
+		if (!IgnoreFaction.HasTag(ActionComp->GetFaction()))
+		{
+			bTriggered = true;
+			TriggerActor(ActionComp);
+		}
 	}
 }
 

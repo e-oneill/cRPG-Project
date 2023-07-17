@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "EnvironmentalTriggerActor.generated.h"
+
 
 class UBoxComponent;
 class UDecalComponent;
@@ -39,6 +41,9 @@ protected:
 	//Will cause the trigger to keep looping, if false will just retrigger once
 	UPROPERTY(EditAnywhere, Category = "Environmental Trigger")
 	bool bLooping = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Environmental Trigger", meta = (Categories="Faction."))
+	FGameplayTagContainer IgnoreFaction;
 
 	UPROPERTY(EditAnywhere, Category = "Environmental Trigger", meta = (EditCondition = "bAutoRetrigger"))
 	bool bStartDelayAfterOverlapEnd = false;
