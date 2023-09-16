@@ -3,6 +3,7 @@
 
 #include "InteractableActor.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "GameplayActionSystem/GameplayActionSystemStatics.h"
 
 // Sets default values
 AInteractableActor::AInteractableActor()
@@ -53,7 +54,17 @@ bool AInteractableActor::CanInteract_Implementation(AActor* Interactor)
 		}
 	}
 
-	return bInRange && bHasAttribute;
+	if (bSkillCheckToInteract && (!bSkillCheckSucceeded || bMustRetakeCheck))
+	{
+		ESKillCheckResult SkillCheckResult =  UGameplayActionSystemStatics::MakeSkillCheck(ActionComponent, SkillToCheck, TargetNumber);
+		bSkillCheckSucceeded = (SkillCheckResult == ESKillCheckResult::SUCCESS) ? true : false;
+		if (!bSkillCheckSucceeded)
+		{
+			TargetNumber += RampDifficulty;
+		}
+	}
+
+	return bInRange && bHasAttribute && bSkillCheckSucceeded;
 }
 
 bool AInteractableActor::Interact_Implementation(AActor* Interactor)

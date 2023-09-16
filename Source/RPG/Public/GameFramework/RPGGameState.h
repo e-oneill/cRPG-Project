@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameplayTagContainer.h"
+#include "CharacterProgression/SkillDataAsset.h"
 #include "RPGGameState.generated.h"
 
 class UEncounterManager;
@@ -74,5 +75,11 @@ protected:
 
 	//UPROPERTY(BlueprintReadOnly, Category = "Random Generation")
 	static FRandomStream RandomStream;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	USkillDataAsset* SkillsDataAsset;
+
+public:
+	USkillDataAsset* GetSkillsData() const { return SkillsDataAsset; }
 	
 };

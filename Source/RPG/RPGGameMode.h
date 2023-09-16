@@ -22,10 +22,19 @@ public:
 
 	ARPGPlayerController* SetupControlledActor(UPlayerControlComponent* PlayerControlComp);
 
+	void StartPlay() override;
+
+	int GetRandomInt(int lower, int higher);
+
 protected:
 	TArray<APlayerState*> GetPlayerArray();
 
 	void AssignControlledActorToPlayer(UPlayerControlComponent* ControlledActor, ARPGPlayerController* Player);
+
+	FRandomStream RandomStream;
+
+	int32 RandomSeed;
+
 };
 
 

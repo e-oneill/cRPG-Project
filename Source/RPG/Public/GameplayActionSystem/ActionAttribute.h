@@ -53,7 +53,7 @@ public:
 	UFUNCTION()
 	void ChangeAttributeValue(float val, UActionEffect* SourceEffect);
 
-	
+	float GetSkillCheckModifier(UGameplayActionComponent* ActingComponent);
 
 	#pragma region GettersSetters
 	float GetAttributeValue() const { return AttributeValue; }
