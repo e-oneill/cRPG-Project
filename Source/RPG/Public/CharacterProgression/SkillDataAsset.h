@@ -21,7 +21,17 @@ class RPG_API USkillDataAsset : public UDataAsset
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<FGameplayTag, FSkillData> SkillData;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		TArray<int> LevelUpThresholds;
+
 	public:
 	TOptional<FSkillData> GetSkillData(FGameplayTag Skill);
+
+	UFUNCTION(BlueprintCallable)
+	int GetXPToLevel(int Level);
+
+	UFUNCTION(BlueprintPure)
+	int const GetMaxLevel();
+
 	
 };

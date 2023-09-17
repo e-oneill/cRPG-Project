@@ -38,6 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetDamageType() const { return DamageType; };
 
+	UGameplayActionComponent* GetEffectSource() const { return EffectSource; }
+	void SetEffectSource(UGameplayActionComponent* val) { EffectSource = val; }
 protected:
 	void PrepareToDestroy();
 

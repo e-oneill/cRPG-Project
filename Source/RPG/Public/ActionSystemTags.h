@@ -16,6 +16,10 @@ struct RPG_API FActionSystemTags : public FGameplayTagNativeAdder
 	FGameplayTag Attr_Movement;
 	FGameplayTag Attr_ActionPoints;
 
+	FGameplayTag Attr_Level;
+	FGameplayTag Attr_Experience;
+	FGameplayTag Attr_ExperienceGranted;
+
 	//ability scores
 	FGameplayTag Might;
 	FGameplayTag Agility;
@@ -89,7 +93,9 @@ protected:
 		Skill = Manager.AddNativeGameplayTag(TEXT("Attribute.Skill"));
 		Skill_Thieving = Manager.AddNativeGameplayTag(TEXT("Attribute.Skill.Thieving"));
 		
-		
+		Attr_Level = Manager.AddNativeGameplayTag(TEXT("Attribute.Level"));
+		Attr_Experience = Manager.AddNativeGameplayTag(TEXT("Attribute.Experience"));
+		Attr_ExperienceGranted = Manager.AddNativeGameplayTag(TEXT("Attribute.ExperienceGranted"));
 
 		Attr_Health = Manager.AddNativeGameplayTag(TEXT("Attribute.Health"));
 		Attr_PhysicalArmour = Manager.AddNativeGameplayTag(TEXT("Attribute.PhysicalArmour"));

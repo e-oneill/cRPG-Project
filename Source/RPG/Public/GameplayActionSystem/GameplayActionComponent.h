@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float DefaultValue;
+
+	UPROPERTY(EditAnywhere)
+	bool IgnoreMaxValue = false;
 };
 
 

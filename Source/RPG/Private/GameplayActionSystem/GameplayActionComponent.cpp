@@ -132,7 +132,9 @@ bool UGameplayActionComponent::AddAttribute(FAttributeConfig NewAttribute)
 			return false;
 		}
 	}
-	UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute.AttributeName, NewAttribute.DefaultValue);
+
+	//UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute.AttributeName, NewAttribute.DefaultValue);
+	UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute);
 
 	Attributes.Add(ANewAttribute);
 

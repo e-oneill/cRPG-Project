@@ -7,6 +7,7 @@
 #include "Interfaces/PlayerInteraction/Selectable.h"
 #include "Interfaces/PlayerInteraction/PlayerControlComponent.h"
 #include "GameplayActionSystem/ActionOwnerInterface.h"
+#include "Interfaces/CharacterProgression/ExperienceGrantable.h"
 #include "RPGCharacter.generated.h"
 
 class UTurn;
@@ -17,7 +18,7 @@ class UPawnSensingComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterEncounterEventSignature, ARPGCharacter*, Character, AEncounter*, Encounter);
 
 UCLASS(Blueprintable)
-class ARPGCharacter : public ACharacter, public ISelectable, public IActionOwnerInterface
+class ARPGCharacter : public ACharacter, public ISelectable, public IActionOwnerInterface, public IExperienceGrantable
 {
 	GENERATED_BODY()
 

@@ -87,7 +87,8 @@ protected:
 
 	void SetupActionPoints(UGameplayActionComponent* ActionComponent, UActionAttribute* APAttribute);
 
-
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSelectedActorChanged(AActor* InSelectedActor);
 
 public:
 	void HandleSelectedActorChange(AActor* InSelectedActor);

@@ -8,6 +8,7 @@
 #include "ActionSystemTags.h"
 #include "RPGGameStatics.h"
 #include "CharacterProgression/CharacterProgressionStatics.h"
+#include "Interfaces/CharacterProgression/ExperienceGrantable.h"
 
 
 void UActionAttribute::OnRep_AttributeValue()
@@ -35,12 +36,22 @@ UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* Ow
 	return NewAttribute;
 }
 
+UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* OwningComponent, FAttributeConfig AttributeConfig)
+{
+	UActionAttribute* NewAttribute = CreateAttribute(OwningComponent, AttributeConfig.AttributeName, AttributeConfig.DefaultValue);
+	NewAttribute->IgnoreMaxValue = AttributeConfig.IgnoreMaxValue;
+
+	return NewAttribute;
+
+}
+
 void UActionAttribute::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	DOREPLIFETIME(UActionAttribute, AttributeTag);
 	DOREPLIFETIME(UActionAttribute, AttributeBaseValue);
 	DOREPLIFETIME(UActionAttribute, AttributeValue);
 	DOREPLIFETIME(UActionAttribute, ActionComponent);
+	DOREPLIFETIME(UActionAttribute, IgnoreMaxValue);
 
 }
 
@@ -83,8 +94,13 @@ float UActionAttribute::GetSkillCheckModifier(UGameplayActionComponent* ActingCo
 void UActionAttribute::HandleStandardChange(float val, UActionEffect* SourceEffect)
 {
 	float NewAttributeValue = AttributeValue - val;
+	float max = AttributeBaseValue;
+	if (IgnoreMaxValue)
+	{
+		max = FLT_MAX;
+	}
 
-	AttributeValue = FMath::Clamp(NewAttributeValue, 0.f, AttributeBaseValue);
+	AttributeValue = FMath::Clamp(NewAttributeValue, 0.f, max);
 	OnAttributeChanged.Broadcast(ActionComponent, this);
 }
 
@@ -99,6 +115,7 @@ void UActionAttribute::HandleHealthChange(float val, UActionEffect* SourceEffect
 	UActionAttribute* PhysicalArmour = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_PhysicalArmour);
 	UActionAttribute* MagicalArmour = ActionComponent->GetAttributeByTag(FActionSystemTags::Get().Attr_MagicalArmour);
 	FGameplayTag SourceDamageType = SourceEffect->GetDamageType();
+	UGameplayActionComponent* DamageDealer = SourceEffect->GetEffectSource();
 
 	if (val > 0 && PhysicalArmour && SourceDamageType.MatchesTag(FActionSystemTags::Get().Dmg_Physical))
 	{
@@ -132,8 +149,21 @@ void UActionAttribute::HandleHealthChange(float val, UActionEffect* SourceEffect
 
 	HandleStandardChange(val, SourceEffect);
 
+	
+
 	if (AttributeValue <= 0)
 	{
+		if (Cast<IExperienceGrantable>(ActionComponent->GetOwner()) && Cast<IExperienceGrantable>(DamageDealer->GetOwner()))
+		{
+			//both the attacker and attacked implement the interface
+			IExperienceGrantable::Execute_GrantExperience(ActionComponent->GetOwner(), DamageDealer);
+		}
+		UActionAttribute* ExperienceAttribute = DamageDealer->GetAttributeByTag(FActionSystemTags::Get().Attr_Experience);
+		if (ExperienceAttribute)
+		{
+
+		}
+
 		//if the attribute is Health, we should run low health logic at zero hp
 		HandleDeath();
 	}
@@ -150,6 +180,9 @@ void UActionAttribute::SetAttributeValue(float val)
 void UActionAttribute::HandleDeath()
 {
 	bool bIsPlayerControlled = (URPGGameStatics::GetActionComponentPlayerController(ActionComponent) != nullptr);
+
+
+
 
 	if (bIsPlayerControlled)
 	{
