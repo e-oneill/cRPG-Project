@@ -35,7 +35,7 @@ TOptional<FSkillData> UCharacterProgressionStatics::GetSkillDataFromTag(FGamepla
 
 float UCharacterProgressionStatics::CalculateSkillModifierForActor(FSkillData& Skill, UGameplayActionComponent* ActionComponent)
 {
-	TArray<FGameplayTag> GoverningAbilities = Skill.GoverningAbilities;
+	FGameplayTagContainer GoverningAbilities = Skill.GoverningAbilities;
 	float modifier = 0;
 	for (FGameplayTag Ability : GoverningAbilities)
 	{

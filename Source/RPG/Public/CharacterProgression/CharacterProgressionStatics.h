@@ -33,7 +33,7 @@ struct FSkillData
 		ESkillType SkillType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		TArray<FGameplayTag> GoverningAbilities;
+		FGameplayTagContainer GoverningAbilities;
 };
 
 /**

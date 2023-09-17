@@ -62,7 +62,7 @@ struct RPG_API FActionSystemTags : public FGameplayTagNativeAdder
 	static FGameplayTagContainer GetActionBlockers();
 
 public:
-	static FGameplayTagContainer GetGoverningAttributes(FGameplayTag Skill);
+	static FGameplayTagContainer GetGoverningAttributes(FGameplayTag Skill, UWorld* WorldContext);
 
 protected:
 	virtual void AddTags() override
