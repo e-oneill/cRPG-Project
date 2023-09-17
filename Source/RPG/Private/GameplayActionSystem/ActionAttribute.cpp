@@ -7,7 +7,7 @@
 #include "GameplayActionSystem/GameplayActionComponent.h"
 #include "ActionSystemTags.h"
 #include "RPGGameStatics.h"
-
+#include "CharacterProgression/CharacterProgressionStatics.h"
 
 
 void UActionAttribute::OnRep_AttributeValue()
@@ -46,16 +46,38 @@ void UActionAttribute::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UActionAttribute::ChangeAttributeValue(float val, UActionEffect* SourceEffect)
 {
-	if (AttributeTag == FActionSystemTags::Get().Attr_Health)
+	if (AttributeTag.MatchesTagExact(FActionSystemTags::Get().Attr_Health))
 	{
 		HandleHealthChange(val, SourceEffect);
 	}
 	else
 	{
 		HandleStandardChange(val, SourceEffect);
-		
 	}
 	//OnAttributeChanged.Broadcast(ActionComponent, this);
+}
+
+float UActionAttribute::GetSkillCheckModifier(UGameplayActionComponent* ActingComponent)
+{
+	//if the tag depth match is less than 2, the tag is not a child of Attribute.Skill
+	if (AttributeTag.MatchesTagDepth(FActionSystemTags::Get().Skill) < 2)
+	{
+		return -1.f;
+	}
+	float AbilityModifier = 0;
+
+
+	TOptional<FSkillData> OptionalSkillData = UCharacterProgressionStatics::GetSkillDataFromTag(AttributeTag, GetWorld());
+	if (OptionalSkillData.IsSet())
+	{
+		FSkillData& SkillData = OptionalSkillData.GetValue();
+		AbilityModifier = UCharacterProgressionStatics::CalculateSkillModifierForActor(SkillData, ActionComponent);
+	}
+
+	
+
+	//for now just return the level of the skill
+	return AttributeValue + AbilityModifier;
 }
 
 void UActionAttribute::HandleStandardChange(float val, UActionEffect* SourceEffect)

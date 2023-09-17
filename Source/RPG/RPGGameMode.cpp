@@ -28,6 +28,8 @@ ARPGGameMode::ARPGGameMode()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
+
+	RandomSeed = rand();
 }
 
 ARPGPlayerController* ARPGGameMode::SetupControlledActor(UPlayerControlComponent* PlayerControlComp)
@@ -61,6 +63,18 @@ ARPGPlayerController* ARPGGameMode::SetupControlledActor(UPlayerControlComponent
 
 	return PlayerController;
 
+}
+
+void ARPGGameMode::StartPlay()
+{
+	Super::StartPlay();
+	RandomStream = FRandomStream(RandomSeed);
+	//RandomStream.Initialize(RandomSeed);
+}
+
+int ARPGGameMode::GetRandomInt(int lower, int higher)
+{
+	return RandomStream.RandRange(lower, higher);
 }
 
 TArray<APlayerState*> ARPGGameMode::GetPlayerArray()

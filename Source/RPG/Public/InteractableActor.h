@@ -50,6 +50,24 @@ protected:
 	UPROPERTY(EditAnywhere, meta = (TitleProperty = "{Attribute}: {ValueRequired}"))
 	TArray<FInteractableAttributeRequirement> AttributeRequirements;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bSkillCheckToInteract;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Attribute.Skill.", EditCondition = "bSkillCheckToInteract", EditConditionHides))
+	FGameplayTag SkillToCheck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bSkillCheckToInteract", EditConditionHides))
+	int32 TargetNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bSkillCheckToInteract", EditConditionHides))
+	bool bMustRetakeCheck = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bSkillCheckToInteract", EditConditionHides, ToolTip = "The target number will increment by this amount each time you fail."))
+	int32 RampDifficulty;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bSkillCheckSucceeded = false;
+
 public:	
 	bool GetInteracted() const {return bInteracted;}
 	void SetInteracted(bool bInInteracted) {bInteracted = bInInteracted;}
@@ -62,7 +80,6 @@ public:
 
 	bool Interact_Implementation(AActor* Interactor) override;
 
-
-
-
+	bool SkillCheckSucceeded() const { return bSkillCheckSucceeded; }
+	void SkillCheckSucceeded(bool val) { bSkillCheckSucceeded = val; }
 };

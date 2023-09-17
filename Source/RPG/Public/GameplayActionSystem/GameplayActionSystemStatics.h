@@ -6,13 +6,13 @@
 #include "GameplayTagContainer.h"
 #include "Animation/AnimMontage.h"
 #include "Sound/SoundCue.h"
-
-class UFXSystemAsset;
-//#include "ActionEffect.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "GameplayActionSystemStatics.generated.h"
 /**
  * 
  */
+class UFXSystemAsset;
+class UGameplayActionComponent;
 
  USTRUCT(BlueprintType)
  struct  FAttributeData
@@ -276,9 +276,21 @@ public:
 	FEffectConfigurationData EffectConfiguration;
  };
 
-class RPG_API GameplayActionSystemStatics
+ UENUM(Blueprintable)
+ enum class ESKillCheckResult : uint8
+ {
+	 INVALID,
+	 FAIL,
+	 SUCCESS
+ };
+
+ UCLASS()
+class RPG_API UGameplayActionSystemStatics : public UBlueprintFunctionLibrary
 {
+
+	GENERATED_BODY()
+
 public:
-	GameplayActionSystemStatics();
-	~GameplayActionSystemStatics();
+	UFUNCTION(BlueprintCallable)
+	static ESKillCheckResult MakeSkillCheck(UGameplayActionComponent* ActionComponent, FGameplayTag Skill, float TargetNumber);
 };
