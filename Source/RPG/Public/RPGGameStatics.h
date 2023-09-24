@@ -25,4 +25,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "RPG|Game State")
 	static ARPGPlayerController* GetActionComponentPlayerController(UGameplayActionComponent* ActionComponent);
+
+	UFUNCTION(BlueprintPure, Category = "RPG|Game State")
+	static ARPGGameState* GetGameState(UWorld* World);
 };

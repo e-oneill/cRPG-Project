@@ -10,10 +10,8 @@
 #include "CharacterProgressionStatics.generated.h"
 
 class UGameplayActionComponent;
-
-
-
-
+class UActionAttribute;
+class USkillDataAsset;
 
 UENUM(BlueprintType)
 enum class ESkillType : uint8
@@ -49,5 +47,19 @@ class RPG_API UCharacterProgressionStatics : public UBlueprintFunctionLibrary
 
 		UFUNCTION(BlueprintCallable)
 	static float CalculateSkillModifierForActor(FSkillData& Skill, UGameplayActionComponent* ActionComponent);
+
+	UFUNCTION(BlueprintCallable)
+	static bool CanLevelUp(UGameplayActionComponent* ToLevel);
+
+	static bool CanLevelUp(UActionAttribute* Experience, UActionAttribute* Level, UWorld* WorldContext);
+
+	UFUNCTION(BlueprintCallable)
+	static void LevelUpCharacter(UGameplayActionComponent* ToLevel);
+
+	UFUNCTION(BlueprintCallable)
+	static USkillDataAsset* GetSkillDataAsset(UWorld* WorldContext);
+
+	UFUNCTION(BlueprintCallable)
+	static void SpendPointsOnAttribute(UGameplayActionComponent* ToSpend, UActionAttribute* AttributeToIncrease, UActionAttribute* AttributeToSpend, float AmountToSpend = 1.0f);
 	
 };

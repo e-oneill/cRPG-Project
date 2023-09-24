@@ -13,3 +13,18 @@ TOptional<FSkillData> USkillDataAsset::GetSkillData(FGameplayTag Skill)
 
 	return TOptional<FSkillData>();
 }
+
+int USkillDataAsset::GetXPToLevel(int Level)
+{
+	if (LevelUpThresholds.Num() >= Level)
+	{
+		return LevelUpThresholds[Level-1];
+	}
+	else
+		return -1;
+}
+
+int const USkillDataAsset::GetMaxLevel()
+{
+	return LevelUpThresholds.Num();
+}

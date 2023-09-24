@@ -5,6 +5,8 @@
 #include "GameFramework/RPGGameState.h"
 #include "../RPG.h"
 #include "GameplayActionSystem/GameplayActionComponent.h"
+#include "ActionSystemTags.h"
+#include "RPGGameStatics.h"
 
 TOptional<FSkillData> UCharacterProgressionStatics::GetSkillDataFromTag(FGameplayTag Skill, UWorld* WorldContext)
 {
@@ -64,4 +66,85 @@ float UCharacterProgressionStatics::CalculateSkillModifierForActor(FSkillData& S
 	}
 
 	return modifier;
+}
+
+bool UCharacterProgressionStatics::CanLevelUp(UGameplayActionComponent* ToLevel)
+{
+	UActionAttribute* Experience = ToLevel->GetAttributeByTag(FActionSystemTags::Get().Attr_Experience);
+
+	UActionAttribute* Level = ToLevel->GetAttributeByTag(FActionSystemTags::Get().Attr_Level);
+
+	return CanLevelUp(Experience, Level, ToLevel->GetWorld());
+}
+
+bool UCharacterProgressionStatics::CanLevelUp(UActionAttribute* Experience, UActionAttribute* Level, UWorld* WorldContext)
+{
+	if (!Experience || !Level)
+	{
+		return false;
+	}
+
+	USkillDataAsset* GameDataAsset = GetSkillDataAsset(WorldContext);
+	if (!GameDataAsset)
+	{
+		return false;
+	}
+
+	int XPToLevel = GameDataAsset->GetXPToLevel(Level->GetAttributeValue() + 1);
+
+	return Experience->GetAttributeValue() >= XPToLevel;
+}
+
+void UCharacterProgressionStatics::LevelUpCharacter(UGameplayActionComponent* ToLevel)
+{
+	UActionAttribute* Experience = ToLevel->GetAttributeByTag(FActionSystemTags::Get().Attr_Experience);
+	UActionAttribute* Level = ToLevel->GetAttributeByTag(FActionSystemTags::Get().Attr_Level);
+	
+
+
+	if (!CanLevelUp(Experience, Level, ToLevel->GetWorld()))
+	{
+		return;
+	}
+
+	//increase by one
+	Level->ChangeAttributeValue(-1, nullptr);
+	USkillDataAsset* GameDataAsset = GetSkillDataAsset(ToLevel->GetWorld());
+	for (FLevelUpReward LevelUpReward : GameDataAsset->GetLevelUpRewards())
+	{
+		FGameplayTag RewardAttributeTag = LevelUpReward.AttributeToReward;
+		UActionAttribute* Attribute = ToLevel->GetAttributeByTag(RewardAttributeTag);
+		if (!Attribute)
+		{
+			ToLevel->AddAttribute(RewardAttributeTag, LevelUpReward.AmountToReward, true, true);
+		}
+		else
+		{
+			Attribute->ChangeAttributeValue(-1*LevelUpReward.AmountToReward, nullptr);
+		}
+	}
+}
+
+USkillDataAsset* UCharacterProgressionStatics::GetSkillDataAsset(UWorld* WorldContext)
+{
+	ARPGGameState* GameState = URPGGameStatics::GetGameState(WorldContext);
+	if (!GameState)
+	{
+		return nullptr;
+	}
+
+	return GameState->GetSkillsData();
+}
+
+void UCharacterProgressionStatics::SpendPointsOnAttribute(UGameplayActionComponent* ToSpend, UActionAttribute* AttributeToIncrease, UActionAttribute* AttributeToSpend, float AmountToSpend /*= 1.0f*/)
+{
+	FGameplayTagContainer AttributeToIncreaseTags = AttributeToIncrease->GetAttributeTag().GetGameplayTagParents();
+	FGameplayTagContainer AttributeToSpendTags = AttributeToSpend->GetAttributeTag().GetGameplayTagParents();
+	FGameplayTag Last = AttributeToIncreaseTags.Last();
+	FGameplayTag OtherLast = AttributeToIncreaseTags.Last();
+	if (Last.MatchesTagExact(OtherLast))
+	{
+		AttributeToIncrease->ChangeAttributeValue(-1*AmountToSpend, nullptr);
+		AttributeToSpend->ChangeAttributeValue(AmountToSpend, nullptr);
+	}
 }

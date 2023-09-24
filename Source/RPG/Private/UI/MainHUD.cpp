@@ -210,7 +210,7 @@ void UMainHUD::HandleSelectedActorChange(AActor* InSelectedActor)
 		AssignBoundActionsToHotbar(SelectedComponent);
 	}
 	
-	
+	OnSelectedActorChanged(InSelectedActor);
 
 }
 

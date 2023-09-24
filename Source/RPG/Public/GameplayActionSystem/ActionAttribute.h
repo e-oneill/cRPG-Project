@@ -9,6 +9,7 @@
 
 class UGameplayActionComponent;
 class UActionEffect;
+struct FAttributeConfig;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttributeChangeSignature, UGameplayActionComponent*, OwningComponent, UActionAttribute*, Attribute);
 
@@ -27,13 +28,16 @@ protected:
 	float AttributeBaseValue;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing=OnRep_AttributeValue)
 	float AttributeValue;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
+	bool IgnoreMaxValue;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	UGameplayActionComponent* ActionComponent;
 
 	void HandleStandardChange(float val, UActionEffect* SourceEffect);
 
 	void HandleHealthChange(float val, UActionEffect* SourceEffect);
+
+	
 
 	UFUNCTION()
 	void OnRep_AttributeValue();
@@ -43,7 +47,8 @@ protected:
 	#pragma endregion HandleDeathLogic
 
 public:
-	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue = true);
+	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue = true, bool bIgnoreMaxValue = false);
+	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FAttributeConfig AttributeConfig);
 
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangeSignature OnAttributeChanged;

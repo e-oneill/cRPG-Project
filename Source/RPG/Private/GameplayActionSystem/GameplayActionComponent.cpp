@@ -132,17 +132,41 @@ bool UGameplayActionComponent::AddAttribute(FAttributeConfig NewAttribute)
 			return false;
 		}
 	}
-	UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute.AttributeName, NewAttribute.DefaultValue);
 
-	Attributes.Add(ANewAttribute);
+	//UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute.AttributeName, NewAttribute.DefaultValue);
+	UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute);
 
-	if (Attributes.Contains(ANewAttribute))
+	return AddAttribute(ANewAttribute);
+	
+}
+
+bool UGameplayActionComponent::AddAttribute(FGameplayTag NewAttribute, float DefaultValue, bool bDefaultToValue, bool bIgnoreMaxValue)
+{
+	for (UActionAttribute* Attribute : Attributes)
 	{
-		OnAttributeAdded.Broadcast(this, ANewAttribute);
+		if (Attribute->GetAttributeTag() == NewAttribute)
+		{
+			//return false if an attribute with this tag exists
+			return false;
+		}
 	}
-	
-	return true;
-	
+
+	UActionAttribute* ANewAttribute = UActionAttribute::CreateAttribute(this, NewAttribute, DefaultValue, bDefaultToValue, bIgnoreMaxValue);
+	return AddAttribute(ANewAttribute);
+}
+
+bool UGameplayActionComponent::AddAttribute(UActionAttribute* InAttribute)
+{
+	Attributes.Add(InAttribute);
+	if (Attributes.Contains(InAttribute))
+	{
+		OnAttributeAdded.Broadcast(this, InAttribute);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool UGameplayActionComponent::RemoveAttributeByTag(FGameplayTag AttributeTag)

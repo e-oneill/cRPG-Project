@@ -16,11 +16,13 @@ UActionEffect* UActionEffect::CreateActionEffect(FEffectConfigurationData Config
 	FString Name;
 	if (InTarget)
 	{
-		Name = (TEXT("ActionEffect_%s_%s"), *InSource->GetOwner()->GetName(), *InTarget->GetOwner()->GetName());
+		//Name = (TEXT("ActionEffect_%s_%s"), *InSource->GetOwner()->GetName(), *InTarget->GetOwner()->GetName());
+		Name = (TEXT("ActionEffect"));
 	}
 	else
 	{
-		Name = (TEXT("ActionEffect_%s_%s"), *InSource->GetOwner()->GetName(), *InTargetLocation.ToString());
+		//Name = (TEXT("ActionEffect_%s_%s"), *InSource->GetOwner()->GetName(), *InTargetLocation.ToString());
+		Name = (TEXT("ActionEffect"));
 	}
 	UActionEffect* NewActionEffect = NewObject<UActionEffect>(InSource, FName(Name));
 

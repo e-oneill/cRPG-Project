@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#pragma warning(suppress : 4834)
 
 #include "InventorySystem/ItemEquippable.h"
 #include "InventorySystem/InventoryComponent.h"
@@ -28,7 +28,8 @@ void UItemEquippable::OnEquip_Implementation(UInventoryComponent* InEquipper, FE
 		return;
 	}
 
-	ItemStaticMeshComponent = NewObject<UStaticMeshComponent>(EquipperActionComponent->GetOwner(), UStaticMeshComponent::StaticClass(), (TEXT("%s-%s-%s"), *Equipper->GetOwner()->GetName(), *GetName(), *ItemStaticMesh->GetName()));
+	//ItemStaticMeshComponent = NewObject<UStaticMeshComponent>(EquipperActionComponent->GetOwner(), UStaticMeshComponent::StaticClass(), (TEXT("%s-%s-%s"), *Equipper->GetOwner()->GetName(), *GetName(), *ItemStaticMesh->GetName()));
+	ItemStaticMeshComponent = NewObject<UStaticMeshComponent>(EquipperActionComponent->GetOwner(), UStaticMeshComponent::StaticClass(), (TEXT("StaticMeshComp")));
 	if (ItemStaticMeshComponent)
 	{
 		ItemStaticMeshComponent->SetStaticMesh(ItemStaticMesh);
