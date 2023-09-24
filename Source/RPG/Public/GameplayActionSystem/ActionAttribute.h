@@ -47,7 +47,7 @@ protected:
 	#pragma endregion HandleDeathLogic
 
 public:
-	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue = true);
+	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue = true, bool bIgnoreMaxValue = false);
 	static UActionAttribute* CreateAttribute(UGameplayActionComponent* OwningComponent, FAttributeConfig AttributeConfig);
 
 	UPROPERTY(BlueprintAssignable)

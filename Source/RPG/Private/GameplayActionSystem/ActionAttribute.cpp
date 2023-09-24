@@ -19,12 +19,13 @@ void UActionAttribute::OnRep_AttributeValue()
 
 
 
-UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* OwningComponent,FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue /* = true*/)
+UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* OwningComponent,FGameplayTag InAttributeTag, float InDefaultValue, bool bShouldDefaultToBaseValue /* = true*/, bool bIgnoreMaxValue /* = false*/)
 {
 	UActionAttribute* NewAttribute = NewObject<UActionAttribute>(OwningComponent, FName(InAttributeTag.ToString()));
 	NewAttribute->SetActionComponent(OwningComponent);
 	NewAttribute->SetAttributeTag(InAttributeTag);
 	NewAttribute->SetAttributeBaseValue(InDefaultValue);
+	NewAttribute->IgnoreMaxValue = bIgnoreMaxValue;
 	if (bShouldDefaultToBaseValue)
 	{
 		NewAttribute->SetAttributeValue(InDefaultValue);
@@ -38,8 +39,7 @@ UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* Ow
 
 UActionAttribute* UActionAttribute::CreateAttribute(UGameplayActionComponent* OwningComponent, FAttributeConfig AttributeConfig)
 {
-	UActionAttribute* NewAttribute = CreateAttribute(OwningComponent, AttributeConfig.AttributeName, AttributeConfig.DefaultValue);
-	NewAttribute->IgnoreMaxValue = AttributeConfig.IgnoreMaxValue;
+	UActionAttribute* NewAttribute = CreateAttribute(OwningComponent, AttributeConfig.AttributeName, AttributeConfig.DefaultValue, true, AttributeConfig.IgnoreMaxValue);
 
 	return NewAttribute;
 

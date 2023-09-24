@@ -36,3 +36,15 @@ ARPGPlayerController* URPGGameStatics::GetActionComponentPlayerController(UGamep
 
 	return PlayerControlComponent->GetPlayerController();
 }
+
+ARPGGameState* URPGGameStatics::GetGameState(UWorld* World)
+{
+	if (!World)
+	{
+		return nullptr;
+	}
+
+	ARPGGameState* GameState = Cast<ARPGGameState>(World->GetGameState());
+
+	return GameState;
+}

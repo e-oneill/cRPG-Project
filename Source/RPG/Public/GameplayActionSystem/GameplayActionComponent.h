@@ -126,6 +126,8 @@ public:
 	#pragma region AttributeInteractions
 	//use this function whenever you want to add an attribute to a character, it will ensure that it is only added if no attribute with that tag already exists. Returns true if it was added, false if one already existed.
 	bool AddAttribute(FAttributeConfig NewAttribute);
+	bool AddAttribute(FGameplayTag NewAttribute, float DefaultValue, bool bDefaultToValue, bool bIgnoreMaxValue);
+	bool AddAttribute(UActionAttribute* InAttribute);
 	bool RemoveAttributeByTag(FGameplayTag AttributeTag);
 
 	UFUNCTION(BlueprintCallable)

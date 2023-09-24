@@ -8,6 +8,17 @@
 #include "CharacterProgressionStatics.h"
 #include "SkillDataAsset.generated.h"
 
+USTRUCT(BlueprintType)
+struct FLevelUpReward
+{
+	GENERATED_BODY();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		FGameplayTag AttributeToReward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float AmountToReward;
+};
 
 /**
  * 
@@ -24,6 +35,9 @@ class RPG_API USkillDataAsset : public UDataAsset
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		TArray<int> LevelUpThresholds;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		TArray<FLevelUpReward> LevelUpRewards;
+
 	public:
 	TOptional<FSkillData> GetSkillData(FGameplayTag Skill);
 
@@ -32,6 +46,9 @@ class RPG_API USkillDataAsset : public UDataAsset
 
 	UFUNCTION(BlueprintPure)
 	int const GetMaxLevel();
+
+	UFUNCTION(BlueprintPure)
+	TArray<FLevelUpReward> GetLevelUpRewards() const {return LevelUpRewards;}
 
 	
 };

@@ -27,14 +27,21 @@ struct RPG_API FActionSystemTags : public FGameplayTagNativeAdder
 	FGameplayTag Intellect;
 	FGameplayTag Intuition;
 
-#pragma endregion Attributes
-
-
-
 #pragma region Skills
 	FGameplayTag Skill;
 	FGameplayTag Skill_Thieving;
 #pragma endregion Skills
+
+#pragma region AttributePoints
+	FGameplayTag AbilityPoints;
+	FGameplayTag SkillPoints;
+#pragma endregion AttributePoints
+
+#pragma endregion Attributes
+
+
+
+
 
 #pragma region DamageTypes
 	FGameplayTag Dmg_Physical;
@@ -77,8 +84,6 @@ protected:
 		Action_Move = Manager.AddNativeGameplayTag(TEXT("Action.Move"));
 		Action_Attack = Manager.AddNativeGameplayTag(TEXT("Action.Attack"));
 
-		
-
 		Status = Manager.AddNativeGameplayTag(TEXT("Status"));
 		Status_Stunned = Manager.AddNativeGameplayTag(TEXT("Status.Stunned"));
 
@@ -92,6 +97,9 @@ protected:
 
 		Skill = Manager.AddNativeGameplayTag(TEXT("Attribute.Skill"));
 		Skill_Thieving = Manager.AddNativeGameplayTag(TEXT("Attribute.Skill.Thieving"));
+
+		AbilityPoints = Manager.AddNativeGameplayTag(TEXT("Attribute.Ability.Points"));
+		SkillPoints = Manager.AddNativeGameplayTag(TEXT("Attribute.Skill.Points"));
 		
 		Attr_Level = Manager.AddNativeGameplayTag(TEXT("Attribute.Level"));
 		Attr_Experience = Manager.AddNativeGameplayTag(TEXT("Attribute.Experience"));
