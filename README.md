@@ -1,5 +1,5 @@
 # RPGForGitHub
-A Turn Based RPG for Unreal Engine 5.0. My goal was to develop a simple barebones of a CRPG, and implement the 'Delian Tomb' as a level for proof of concept. The gameplay features all work in multiplayer, but I never got around to fixing the UI rendering so it worked in multiplayer, so opening your inventory while in a multiplayer game causes a crash.
+A Turn Based RPG for Unreal Engine 5.0. My goal was to develop a simple barebones of a CRPG, and implement the 'Delian Tomb' as a level for proof of concept (see https://www.youtube.com/watch?v=zTD2RZz6mlo). The gameplay features all work in multiplayer, but I never got around to fixing the UI rendering so it worked in multiplayer, so opening your inventory while in a multiplayer game causes a crash.
 
 # Features:
 * Gameplay Action System - A modular system, inspired by the Gameplay Ability System, that allow the creation of gameplay actions in data. This module allows the characters in the game to take actions, handles the display of visual effects like animation, sounds and particle effects. This is fully networked for a multiplayer game.
